@@ -1276,7 +1276,7 @@
             restaurant: 1.3     // Ресторан (жир, кухня)
         };
         
-        // Функция для получения цены из таблицы Excel
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Получение цены из таблицы Excel
         function getPriceFromTable(cleaningType, area) {
             // Округляем площадь вниз до ближайшего значения из таблицы
             const roundedArea = Math.floor(area / 10) * 10;
@@ -1300,8 +1300,11 @@
                     }
                     
                 case 'general_light':
-                    // Генеральная лайт
-                    if (area <= 30) return 0; // В таблице для 20-30 нет значения
+                    // Генеральная лайт - ИСПРАВЛЕНО
+                    if (area <= 30) {
+                        // Для 30 м² и меньше используем базовую цену
+                        return 7200;
+                    }
                     // Для 40 м²: 7200, далее +1800 за каждые 10 м²
                     const stepsLight = Math.floor((area - 30) / 10);
                     return 7200 + stepsLight * 1800;
@@ -1929,6 +1932,29 @@
             // Получение выбранного типа уборки
             const cleaningType = document.querySelector('input[name="cleaningType"]:checked').value;
             
+            // ДОБАВЛЕНО: Проверка минимальной площади для генеральной уборки
+            let calculatedArea = area;
+            if ((cleaningType === 'general_light' || cleaningType === 'general_full' || cleaningType === 'post_construction') && area < 30) {
+                calculatedArea = 30;
+                // Показываем предупреждение пользователю
+                const warningMessage = `Для генеральной уборки минимальная площадь составляет 30 м². Расчет будет произведен для 30 м².`;
+                console.warn(warningMessage);
+                // Можно добавить отображение предупреждения в интерфейсе
+                if (!document.getElementById('areaWarning')) {
+                    const warningDiv = document.createElement('div');
+                    warningDiv.id = 'areaWarning';
+                    warningDiv.className = 'economy-warning';
+                    warningDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${warningMessage}`;
+                    areaInput.parentNode.appendChild(warningDiv);
+                }
+            } else {
+                // Удаляем предупреждение если оно есть
+                const warningDiv = document.getElementById('areaWarning');
+                if (warningDiv) {
+                    warningDiv.remove();
+                }
+            }
+            
             // Расчет времени и стоимости дополнительных услуг
             const additionalResult = updateServiceTotal();
             const additionalTimeHours = additionalResult.totalTime;
@@ -1940,7 +1966,7 @@
             
             // Базовый расчет человеко-часов по нормативам
             const norm = cleaningNorms[cleaningType];
-            const baseManHours = norm.avg * area;
+            const baseManHours = norm.avg * calculatedArea;
             
             // Применение коэффициентов (коэффициент загрязнения теперь правильно применяется!)
             const objectCoefficient = objectCoefficients[objectType] || 1.0;
@@ -1952,7 +1978,7 @@
             // Получение экономически оправданного количества сотрудников
             const recommendedStaff = getEconomicalStaff(
                 cleaningType, 
-                area, 
+                calculatedArea, 
                 totalManHours, 
                 additionalTimeHours, 
                 additionalCost,
@@ -1993,7 +2019,7 @@
             
             // Формирование информации о расчете
             let tableInfo = `<i class="fas fa-calculator"></i> <strong>Расчет по нормативам:</strong><br>`;
-            tableInfo += `• ${area} м² × ${norm.avg.toFixed(2)} ч/ч на м² = ${baseManHours.toFixed(1)} чел-ч<br>`;
+            tableInfo += `• ${calculatedArea} м² × ${norm.avg.toFixed(2)} ч/ч на м² = ${baseManHours.toFixed(1)} чел-ч<br>`;
             tableInfo += `• Коэффициент объекта: ${objectCoefficient.toFixed(1)}<br>`;
             tableInfo += `• Коэффициент загрязнения: ${pollutionLevel.toFixed(1)}<br>`;
             tableInfo += `• Итого: ${adjustedManHours.toFixed(1)} чел-ч<br>`;
@@ -2010,9 +2036,9 @@
             let recommendationText = "";
             
             if (staffRequired === 1) {
-                recommendationText = `<i class="fas fa-user-check"></i> Для уборки ${area} м² экономически выгодно использовать 1 сотрудника. Работа займет ${formatTime(timePerWorker)}.`;
+                recommendationText = `<i class="fas fa-user-check"></i> Для уборки ${calculatedArea} м² экономически выгодно использовать 1 сотрудника. Работа займет ${formatTime(timePerWorker)}.`;
             } else {
-                recommendationText = `<i class="fas fa-users"></i> Для уборки ${area} м² рекомендуется бригада из ${staffRequired} сотрудников. Каждый отработает ${formatTime(timePerWorker)}.`;
+                recommendationText = `<i class="fas fa-users"></i> Для уборки ${calculatedArea} м² рекомендуется бригада из ${staffRequired} сотрудников. Каждый отработает ${formatTime(timePerWorker)}.`;
             }
             
             // Особые примечания с учетом коэффициента загрязнения
@@ -2024,7 +2050,7 @@
                 recommendationText += ` <span style="color: #28a745;"><i class="fas fa-check-circle"></i> Лёгкое загрязнение уменьшает время работы на ${((1.0 - pollutionLevel) * 100).toFixed(0)}% и стоимость заказа на ${((1.0 - priceMultiplier) * 100).toFixed(0)}%.</span>`;
             }
             
-            if (cleaningType === 'maintenance' && area >= 200 && staffRequired < 2) {
+            if (cleaningType === 'maintenance' && calculatedArea >= 200 && staffRequired < 2) {
                 recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Внимание: для поддерживающей уборки от 200 м² обычно требуется минимум 2 клинера для качества.</span>`;
             }
             
@@ -2043,10 +2069,10 @@
             recommendationMainElement.innerHTML = recommendationText;
             
             // Расчет стоимости с передачей pollutionLevel
-            calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, cleaningType, area, additionalTimeHours, economyMode, pollutionLevel, discountPercent, logisticsCost);
+            calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, cleaningType, calculatedArea, additionalTimeHours, economyMode, pollutionLevel, discountPercent, logisticsCost);
             
             // Формирование плана работы с передачей pollutionLevel
-            generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, pollutionLevel, economyMode, discountPercent, logisticsCost);
+            generateWorkPlan(calculatedArea, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, pollutionLevel, economyMode, discountPercent, logisticsCost);
             
             // Дополнительная информация
             additionalInfoElement.innerHTML = `<i class="fas fa-info-circle"></i> <strong>${complexity.desc}</strong> ${timePerWorker > 8 ? "Рекомендуется разбить работу на несколько дней или увеличить бригаду." : ""}`;
