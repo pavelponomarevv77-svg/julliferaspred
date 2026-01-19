@@ -265,6 +265,23 @@
             transform: translateY(-1px);
         }
         
+        .btn-reset {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+        
+        .btn-reset:hover {
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
         .results-card {
             background-color: white;
             border-radius: 15px;
@@ -1050,9 +1067,15 @@
                     </div>
                 </div>
                 
-                <button class="btn" id="calculateBtn">
-                    <i class="fas fa-calculator"></i> Рассчитать персонал и стоимость
-                </button>
+                <div class="button-group">
+                    <button class="btn" id="calculateBtn">
+                        <i class="fas fa-calculator"></i> Рассчитать персонал и стоимость
+                    </button>
+                    <button class="btn btn-reset" id="resetBtn">
+                        <i class="fas fa-redo"></i> Сбросить все параметры
+                    </button>
+                </div>
+                
                 <div class="loading" id="loadingIndicator">
                     <i class="fas fa-spinner fa-spin"></i> Расчёт...
                 </div>
@@ -1426,6 +1449,7 @@
         const pollutionLevelSelect = document.getElementById('pollutionLevel');
         const desiredTimeInput = document.getElementById('desiredTime');
         const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn'); // НОВАЯ КНОПКА
         const loadingIndicator = document.getElementById('loadingIndicator');
         const servicesContainer = document.getElementById('servicesContainer');
         const additionalServicesTotal = document.getElementById('additionalServicesTotal');
@@ -1919,6 +1943,159 @@
             tableInfoElement.innerHTML = tableInfo;
         }
         
+        // НОВАЯ ФУНКЦИЯ: Сброс всех параметров к исходным значениям
+        function resetCalculator() {
+            // Сброс основных параметров
+            objectTypeSelect.value = 'apartment';
+            areaInput.value = 100;
+            areaSlider.value = 100;
+            
+            // Сброс типа уборки к поддерживающей
+            document.querySelector('input[name="cleaningType"][value="maintenance"]').checked = true;
+            
+            // Обновление подсказки о времени
+            timeHint.textContent = "Для поддерживающей: 4-8 ч, для генеральной: 8-12 ч, после ремонта: 12-48 ч";
+            
+            pollutionLevelSelect.value = '1.0';
+            desiredTimeInput.value = 8;
+            
+            // Сброс экономического режима
+            economyModeToggle.checked = true;
+            economyStatus.textContent = 'ВКЛ';
+            economyStatus.style.color = '#28a745';
+            economyStatus.style.fontWeight = 'bold';
+            
+            // Сброс скидки
+            discountInput.value = 0;
+            discountSlider.value = 0;
+            
+            // Сброс логистических услуг
+            carServiceCheckbox.checked = false;
+            equipmentDeliveryCheckbox.checked = false;
+            
+            // Сброс дополнительных услуг
+            additionalServices.forEach(service => {
+                const input = document.getElementById(`qty-${service.id}`);
+                if (input) {
+                    input.value = 0;
+                }
+                const totalElement = document.getElementById(`total-${service.id}`);
+                if (totalElement) {
+                    totalElement.textContent = '0 руб';
+                    totalElement.style.color = '#182848';
+                }
+            });
+            
+            // Обновление итога по дополнительным услугам
+            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги: 0 часов, 0 руб.`;
+            
+            // Скрытие подсказки об экономии
+            economyHint.style.display = 'none';
+            
+            // Сброс результатов
+            baseTimeElement.textContent = '-';
+            additionalTimeElement.textContent = '-';
+            totalTimeElement.textContent = '-';
+            staffRequiredElement.textContent = '-';
+            complexityLevelElement.textContent = '-';
+            complexityBadgeElement.textContent = '';
+            complexityBadgeElement.className = 'complexity-badge';
+            timePerWorkerElement.textContent = '-';
+            mainCleaningCostResultElement.textContent = '-';
+            
+            breakdownBaseElement.textContent = '-';
+            breakdownObjectElement.textContent = '-';
+            breakdownPollutionElement.textContent = '-';
+            breakdownAdditionalElement.textContent = '-';
+            
+            tableInfoElement.innerHTML = `<i class="fas fa-info-circle"></i> Заполните параметры и нажмите "Рассчитать"`;
+            recommendationMainElement.innerHTML = `<i class="fas fa-magic"></i> Заполните параметры и нажмите "Рассчитать"`;
+            
+            // Скрытие разделов с экономикой
+            costSection.style.display = 'none';
+            finalPriceSection.style.display = 'none';
+            
+            // Сброс плана работы
+            workPlanElement.innerHTML = `<p>После расчета появится подробный план работы для вашего объекта.</p>`;
+            additionalInfoElement.innerHTML = '';
+            
+            // Удаление предупреждения о минимальной площади, если оно есть
+            const areaWarning = document.getElementById('areaWarning');
+            if (areaWarning) {
+                areaWarning.remove();
+            }
+            
+            // Восстановление стандартных значений в результатах
+            costStaffElement.textContent = '-';
+            mainCleaningCostElement.textContent = '-';
+            additionalCostElement.textContent = '-';
+            carCostElement.textContent = '-';
+            equipmentCostElement.textContent = '-';
+            totalOrderCostElement.textContent = '-';
+            discountAmountElement.textContent = '-';
+            totalAfterDiscountElement.textContent = '-';
+            staffCostElement.textContent = '-';
+            profitLossElement.textContent = '-';
+            marginPercentElement.textContent = '-';
+            economyAnalysisElement.innerHTML = '';
+            finalPriceElement.innerHTML = '-';
+            
+            // Показ сообщения о сбросе
+            showResetNotification();
+        }
+        
+        // НОВАЯ ФУНКЦИЯ: Показать уведомление о сбросе
+        function showResetNotification() {
+            // Создаем временное уведомление
+            const notification = document.createElement('div');
+            notification.id = 'resetNotification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-check-circle" style="margin-right: 10px; font-size: 1.2rem;"></i>
+                <span>Все параметры сброшены к исходным значениям</span>
+            `;
+            
+            // Добавляем стиль для анимации
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Удаляем уведомление через 3 секунды
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.5s ease-out forwards';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 500);
+            }, 3000);
+        }
+        
         // Основная функция расчета (без индикатора загрузки)
         function performCalculation() {
             // Получение значений из формы
@@ -2329,6 +2506,11 @@
                 desiredTimeInput.value = defaultTime;
                 timeHint.textContent = hintText;
             });
+        });
+        
+        // НОВЫЙ ОБРАБОТЧИК: Кнопка сброса
+        resetBtn.addEventListener('click', function() {
+            resetCalculator();
         });
         
         // Основная функция расчета с индикатором загрузки
