@@ -1316,31 +1316,27 @@
                         return 4290 + steps * 200;
                     } else {
                         // Формула: для 100 м²: 4290 + 200*6 + 450 за каждые 10 м² сверх 90
-                        // Сначала получаем цену для 90 м²: 4290 + 200*6 = 5490
                         const price90 = 4290 + 6 * 200; // 5490
                         const steps = Math.floor((area - 90) / 10);
                         return price90 + steps * 450;
                     }
                     
                 case 'general_light':
-                    // Генеральная лайт - ИСПРАВЛЕНО
+                    // Генеральная лайт - ИСПРАВЛЕНО: теперь дешевле генеральной полной
                     if (area <= 30) {
-                        // Для 30 м² и меньше используем базовую цену
-                        return 7200;
+                        return 5990; // Дешевле генеральной полной
                     }
-                    // Для 40 м²: 7200, далее +1800 за каждые 10 м²
+                    // Для 40 м²: 5990, далее +1200 за каждые 10 м²
                     const stepsLight = Math.floor((area - 30) / 10);
-                    return 7200 + stepsLight * 1800;
+                    return 5990 + stepsLight * 1200;
                     
                 case 'general_full':
                     // Генеральная полная
                     if (area <= 30) return 12490;
                     if (area < 100) {
-                        // Формула: 12490 + 1500 за каждые 10 м² сверх 30
                         const steps = Math.floor((area - 30) / 10);
                         return 12490 + steps * 1500;
                     } else {
-                        // Формула: для 100 м²: 12490 + 1500*6 + 1000 за каждые 10 м² сверх 90
                         const price90 = 12490 + 6 * 1500; // 21490
                         const steps = Math.floor((area - 90) / 10);
                         return price90 + steps * 1000;
@@ -1349,7 +1345,6 @@
                 case 'post_construction':
                     // После ремонта
                     if (area <= 30) return 13990;
-                    // Формула: 13990 + 1500 за каждые 10 м² сверх 30
                     const stepsPost = Math.floor((area - 30) / 10);
                     return 13990 + stepsPost * 1500;
                     
@@ -1449,7 +1444,7 @@
         const pollutionLevelSelect = document.getElementById('pollutionLevel');
         const desiredTimeInput = document.getElementById('desiredTime');
         const calculateBtn = document.getElementById('calculateBtn');
-        const resetBtn = document.getElementById('resetBtn'); // НОВАЯ КНОПКА
+        const resetBtn = document.getElementById('resetBtn');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const servicesContainer = document.getElementById('servicesContainer');
         const additionalServicesTotal = document.getElementById('additionalServicesTotal');
@@ -1780,14 +1775,16 @@
             return 1.0;
         }
         
-        // Функция расчета стоимости с учетом маржинальности и коэффициента загрязнения
-        function calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, cleaningType, area, additionalTimeHours, economyMode, pollutionLevel, discountPercent, logisticsCost) {
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Расчет стоимости с учетом маржинальности, коэффициента загрязнения И КОЭФФИЦИЕНТА ОБЪЕКТА
+        function calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, cleaningType, area, additionalTimeHours, economyMode, pollutionLevel, discountPercent, logisticsCost, objectCoefficient) {
             // Получаем базовую цену из таблицы
             const baseTablePrice = getPriceFromTable(cleaningType, area);
             
             // Применяем коэффициент загрязнения к цене
             let priceMultiplier = getPriceMultiplierForPollution(pollutionLevel);
-            let mainCleaningPrice = Math.round(baseTablePrice * priceMultiplier);
+            
+            // ИСПРАВЛЕНО: Теперь применяем коэффициент объекта к цене
+            let mainCleaningPrice = Math.round(baseTablePrice * objectCoefficient * priceMultiplier);
             
             // Общая стоимость заказа до скидки
             const orderTotalBeforeDiscount = mainCleaningPrice + additionalCost + logisticsCost.total;
@@ -1809,8 +1806,16 @@
             mainCleaningCostElement.textContent = `${formatMoney(mainCleaningPrice)}`;
             
             // Показываем базовую цену и коэффициент в скобках
-            if (priceMultiplier !== 1.0) {
-                mainCleaningCostElement.textContent += ` (базовая: ${formatMoney(baseTablePrice)} ×${priceMultiplier.toFixed(2)})`;
+            if (priceMultiplier !== 1.0 || objectCoefficient !== 1.0) {
+                let multiplierText = '';
+                if (objectCoefficient !== 1.0 && priceMultiplier !== 1.0) {
+                    multiplierText = ` (базовая: ${formatMoney(baseTablePrice)} ×${objectCoefficient.toFixed(1)} ×${priceMultiplier.toFixed(2)})`;
+                } else if (objectCoefficient !== 1.0) {
+                    multiplierText = ` (базовая: ${formatMoney(baseTablePrice)} ×${objectCoefficient.toFixed(1)})`;
+                } else if (priceMultiplier !== 1.0) {
+                    multiplierText = ` (базовая: ${formatMoney(baseTablePrice)} ×${priceMultiplier.toFixed(2)})`;
+                }
+                mainCleaningCostElement.textContent += multiplierText;
             }
             
             additionalCostElement.textContent = formatMoney(additionalCost);
@@ -1909,12 +1914,12 @@
             
             economyAnalysisElement.innerHTML = economyAnalysis;
             
-            // Обновляем информацию о ценах из таблицы с учетом коэффициента загрязнения
-            updateTableInfo(area, cleaningType, baseTablePrice, mainCleaningPrice, orderTotalBeforeDiscount, priceMultiplier, discountPercent);
+            // Обновляем информацию о ценах из таблицы с учетом коэффициента загрязнения и объекта
+            updateTableInfo(area, cleaningType, baseTablePrice, mainCleaningPrice, orderTotalBeforeDiscount, priceMultiplier, objectCoefficient, discountPercent);
         }
         
-        // Обновление информации о ценах из таблицы с учетом коэффициента загрязнения
-        function updateTableInfo(area, cleaningType, baseTablePrice, mainCleaningPrice, orderTotalBeforeDiscount, priceMultiplier, discountPercent) {
+        // Обновление информации о ценах из таблицы с учетом коэффициента загрязнения И ОБЪЕКТА
+        function updateTableInfo(area, cleaningType, baseTablePrice, mainCleaningPrice, orderTotalBeforeDiscount, priceMultiplier, objectCoefficient, discountPercent) {
             let cleaningTypeText = "";
             switch(cleaningType) {
                 case 'maintenance': cleaningTypeText = "Поддерживающая уборка"; break;
@@ -1927,8 +1932,14 @@
             tableInfo += `• Площадь: ${area} м²<br>`;
             tableInfo += `• ${cleaningTypeText}: ${formatMoney(baseTablePrice)}<br>`;
             
+            if (objectCoefficient !== 1.0) {
+                tableInfo += `• Коэффициент объекта: ×${objectCoefficient.toFixed(1)}<br>`;
+            }
+            
             if (priceMultiplier !== 1.0) {
                 tableInfo += `• Коэффициент загрязнения: ×${priceMultiplier.toFixed(2)}<br>`;
+                tableInfo += `• Итоговая цена: ${formatMoney(mainCleaningPrice)}<br>`;
+            } else if (objectCoefficient !== 1.0) {
                 tableInfo += `• Итоговая цена: ${formatMoney(mainCleaningPrice)}<br>`;
             }
             
@@ -2109,6 +2120,9 @@
             // Получение выбранного типа уборки
             const cleaningType = document.querySelector('input[name="cleaningType"]:checked').value;
             
+            // Получаем коэффициент объекта
+            const objectCoefficient = objectCoefficients[objectType] || 1.0;
+            
             // ДОБАВЛЕНО: Проверка минимальной площади для генеральной уборки
             let calculatedArea = area;
             if ((cleaningType === 'general_light' || cleaningType === 'general_full' || cleaningType === 'post_construction') && area < 30) {
@@ -2146,7 +2160,6 @@
             const baseManHours = norm.avg * calculatedArea;
             
             // Применение коэффициентов (коэффициент загрязнения теперь правильно применяется!)
-            const objectCoefficient = objectCoefficients[objectType] || 1.0;
             const adjustedManHours = baseManHours * objectCoefficient * pollutionLevel;
             
             // Общее количество человеко-часов
@@ -2227,6 +2240,11 @@
                 recommendationText += ` <span style="color: #28a745;"><i class="fas fa-check-circle"></i> Лёгкое загрязнение уменьшает время работы на ${((1.0 - pollutionLevel) * 100).toFixed(0)}% и стоимость заказа на ${((1.0 - priceMultiplier) * 100).toFixed(0)}%.</span>`;
             }
             
+            // Примечание о коэффициенте объекта
+            if (objectCoefficient !== 1.0) {
+                recommendationText += ` <span style="color: #17a2b8;"><i class="fas fa-building"></i> Коэффициент типа объекта: ×${objectCoefficient.toFixed(1)} (влияет на стоимость).</span>`;
+            }
+            
             if (cleaningType === 'maintenance' && calculatedArea >= 200 && staffRequired < 2) {
                 recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Внимание: для поддерживающей уборки от 200 м² обычно требуется минимум 2 клинера для качества.</span>`;
             }
@@ -2245,11 +2263,11 @@
             
             recommendationMainElement.innerHTML = recommendationText;
             
-            // Расчет стоимости с передачей pollutionLevel
-            calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, cleaningType, calculatedArea, additionalTimeHours, economyMode, pollutionLevel, discountPercent, logisticsCost);
+            // ИСПРАВЛЕНО: Передаем objectCoefficient в calculateCost
+            calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, cleaningType, calculatedArea, additionalTimeHours, economyMode, pollutionLevel, discountPercent, logisticsCost, objectCoefficient);
             
-            // Формирование плана работы с передачей pollutionLevel
-            generateWorkPlan(calculatedArea, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, pollutionLevel, economyMode, discountPercent, logisticsCost);
+            // Формирование плана работы с передачей pollutionLevel и objectCoefficient
+            generateWorkPlan(calculatedArea, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, pollutionLevel, objectCoefficient, economyMode, discountPercent, logisticsCost);
             
             // Дополнительная информация
             additionalInfoElement.innerHTML = `<i class="fas fa-info-circle"></i> <strong>${complexity.desc}</strong> ${timePerWorker > 8 ? "Рекомендуется разбить работу на несколько дней или увеличить бригаду." : ""}`;
@@ -2258,8 +2276,8 @@
             recommendationCardElement.style.display = 'block';
         }
         
-        // Функция генерации плана работы с учетом загрязнения
-        function generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, pollutionLevel, economyMode, discountPercent, logisticsCost) {
+        // Функция генерации плана работы с учетом загрязнения и коэффициента объекта
+        function generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, pollutionLevel, objectCoefficient, economyMode, discountPercent, logisticsCost) {
             let planHTML = '<div class="work-plan">';
             
             // Определение типа уборки для отображения
@@ -2294,8 +2312,11 @@
             // Информация о коэффициенте загрязнения
             const priceMultiplier = getPriceMultiplierForPollution(pollutionLevel);
             const pollutionNum = parseFloat(pollutionLevel);
+            
+            // Информация о коэффициенте объекта
             planHTML += `<div class="${pollutionLevel > 1.0 ? 'economy-warning' : pollutionLevel < 1.0 ? 'economy-ok' : 'info-text'}">`;
             planHTML += `<i class="fas fa-tint"></i> Коэффициент загрязнения: ×${pollutionLevel.toFixed(1)}<br>`;
+            planHTML += `<i class="fas fa-building"></i> Коэффициент объекта: ×${objectCoefficient.toFixed(1)}<br>`;
             planHTML += `<i class="fas fa-money-bill-wave"></i> Ценовой коэффициент: ×${priceMultiplier.toFixed(2)}<br>`;
             
             // Используем сравнение с погрешностью для чисел с плавающей точкой
@@ -2406,11 +2427,12 @@
             planHTML += `<strong><i class="fas fa-clock"></i> Общее время:</strong> ${formatTime(totalManHours)} (${totalManHours.toFixed(1)} чел-ч)<br>`;
             planHTML += `<strong><i class="fas fa-user-clock"></i> На 1 сотрудника:</strong> ${formatTime(timePerWorker)}<br>`;
             planHTML += `<strong><i class="fas fa-tint"></i> Коэффициент загрязнения:</strong> ×${pollutionLevel.toFixed(1)}<br>`;
+            planHTML += `<strong><i class="fas fa-building"></i> Коэффициент объекта:</strong> ×${objectCoefficient.toFixed(1)}<br>`;
             
             // Добавляем экономическую информацию
             const baseTablePrice = getPriceFromTable(cleaningType, area);
             const priceMultiplierForCost = getPriceMultiplierForPollution(pollutionLevel);
-            const mainCleaningPrice = Math.round(baseTablePrice * priceMultiplierForCost);
+            const mainCleaningPrice = Math.round(baseTablePrice * objectCoefficient * priceMultiplierForCost);
             const orderTotalBeforeDiscount = mainCleaningPrice + additionalCost + logisticsCost.total;
             const discountAmount = Math.round(orderTotalBeforeDiscount * (discountPercent / 100));
             const orderTotal = orderTotalBeforeDiscount - discountAmount;
@@ -2418,6 +2440,7 @@
             const profit = orderTotal - staffCost;
             const margin = orderTotal > 0 ? (profit / orderTotal * 100).toFixed(1) : 0;
             
+            planHTML += `<strong><i class="fas fa-money-bill-wave"></i> Базовая цена:</strong> ${formatMoney(baseTablePrice)}<br>`;
             planHTML += `<strong><i class="fas fa-money-bill-wave"></i> Стоимость основной уборки:</strong> ${formatMoney(mainCleaningPrice)}<br>`;
             planHTML += `<strong><i class="fas fa-money-bill-wave"></i> Дополнительные услуги:</strong> ${formatMoney(additionalCost)}<br>`;
             
