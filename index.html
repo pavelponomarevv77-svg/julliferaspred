@@ -915,6 +915,68 @@
             font-size: 1.2rem;
             text-align: center;
         }
+        
+        /* Новый стиль для выбора количества сотрудников */
+        .staff-selection-section {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e6ff 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 5px solid #4b6cb7;
+        }
+        
+        .staff-selection-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .staff-selection-btn {
+            background: white;
+            border: 2px solid #4b6cb7;
+            color: #4b6cb7;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .staff-selection-btn:hover {
+            background: #4b6cb7;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .staff-count-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #182848;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .staff-recommendation {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .staff-warning {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .staff-ok {
+            color: #28a745;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -1010,6 +1072,57 @@
                         <div class="unit">часов</div>
                     </div>
                     <div class="info-text" id="timeHint">Для поддерживающей: 4-8 ч, для генеральной: 8-12 ч, после ремонта: 12-48 ч</div>
+                </div>
+                
+                <!-- НОВАЯ СЕКЦИЯ: Выбор количества сотрудников -->
+                <div class="staff-selection-section">
+                    <h3 class="section-title" style="font-size: 1.2rem; border-bottom: 2px solid #4b6cb7;">
+                        <i class="fas fa-user-friends"></i> Выбор количества сотрудников
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-users"></i> Режим подбора персонала:</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="staffMode" value="auto" id="staffModeAuto" checked>
+                                <i class="fas fa-robot"></i> Автоматический подбор
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="staffMode" value="manual" id="staffModeManual">
+                                <i class="fas fa-user-edit"></i> Ручной выбор
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="manualStaffSelection" style="display: none;">
+                        <div class="staff-selection-controls">
+                            <button class="staff-selection-btn" id="decreaseStaff">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            
+                            <div class="staff-count-display" id="staffCount">2</div>
+                            
+                            <button class="staff-selection-btn" id="increaseStaff">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="staff-recommendation" id="staffRecommendation">
+                            Рекомендуется: <span id="recommendedStaffCount">2</span> сотрудника
+                        </div>
+                        
+                        <div class="info-text" style="margin-top: 10px;">
+                            Выберите количество сотрудников, которые будут работать на объекте. 
+                            Расчет времени и стоимости будет пересчитан с учетом вашего выбора.
+                        </div>
+                    </div>
+                    
+                    <div id="autoStaffInfo">
+                        <div class="info-text" style="margin-top: 10px;">
+                            <i class="fas fa-robot"></i> Калькулятор автоматически подберет оптимальное количество сотрудников 
+                            на основе площади, типа уборки и экономических показателей.
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-group staff-toggle">
@@ -1126,7 +1239,7 @@
                     </div>
                     
                     <div class="result-item">
-                        <div class="result-label"><i class="fas fa-users"></i> Необходимое количество сотрудников:</div>
+                        <div class="result-label"><i class="fas fa-users"></i> Количество сотрудников:</div>
                         <div class="result-value" id="staffRequired">-</div>
                     </div>
                     
@@ -1186,7 +1299,7 @@
                     
                     <div class="cost-item">
                         <div class="cost-label">Стоимость выхода 1 сотрудника:</div>
-                        <div class="cost-value">4 000 руб.</div>
+                        <div class="cost-value">4 500 руб.</div>
                     </div>
                     
                     <div class="cost-item">
@@ -1268,8 +1381,8 @@
     </div>
 
     <script>
-        // Константы стоимости
-        const STAFF_COST_PER_SHIFT = 4000; // Стоимость выхода одного сотрудника
+        // Константы стоимости - ИСПРАВЛЕНО: 4000 на 4500
+        const STAFF_COST_PER_SHIFT = 4500; // Стоимость выхода одного сотрудника
         const MARGIN_TARGET = 0.25; // Целевая маржинальность 25%
         const MIN_HOURS_FOR_EFFICIENCY = 5; // Минимальное количество часов для эффективного использования сотрудника
         const CAR_SERVICE_COST = 4500; // Выезд автомобиля
@@ -1459,6 +1572,17 @@
         const equipmentDeliveryCheckbox = document.getElementById('equipmentDelivery');
         const finalPriceSection = document.getElementById('finalPriceSection');
         
+        // НОВЫЕ ЭЛЕМЕНТЫ: Выбор количества сотрудников
+        const staffModeAuto = document.getElementById('staffModeAuto');
+        const staffModeManual = document.getElementById('staffModeManual');
+        const manualStaffSelection = document.getElementById('manualStaffSelection');
+        const autoStaffInfo = document.getElementById('autoStaffInfo');
+        const decreaseStaffBtn = document.getElementById('decreaseStaff');
+        const increaseStaffBtn = document.getElementById('increaseStaff');
+        const staffCountDisplay = document.getElementById('staffCount');
+        const staffRecommendation = document.getElementById('staffRecommendation');
+        const recommendedStaffCount = document.getElementById('recommendedStaffCount');
+        
         // Элементы для отображения результатов
         const baseTimeElement = document.getElementById('baseTime');
         const additionalTimeElement = document.getElementById('additionalTime');
@@ -1492,6 +1616,70 @@
         const marginPercentElement = document.getElementById('marginPercent');
         const economyAnalysisElement = document.getElementById('economyAnalysis');
         const finalPriceElement = document.getElementById('finalPrice');
+        
+        // Переменные для хранения данных
+        let currentRecommendedStaff = 2;
+        let manualStaffCount = 2;
+        
+        // Инициализация выбора количества сотрудников
+        function initStaffSelection() {
+            staffCountDisplay.textContent = manualStaffCount;
+            
+            // Обработчики для переключения режима
+            staffModeAuto.addEventListener('change', function() {
+                if (this.checked) {
+                    manualStaffSelection.style.display = 'none';
+                    autoStaffInfo.style.display = 'block';
+                    scheduleCalculation();
+                }
+            });
+            
+            staffModeManual.addEventListener('change', function() {
+                if (this.checked) {
+                    manualStaffSelection.style.display = 'block';
+                    autoStaffInfo.style.display = 'none';
+                    scheduleCalculation();
+                }
+            });
+            
+            // Обработчики для кнопок изменения количества
+            decreaseStaffBtn.addEventListener('click', function() {
+                if (manualStaffCount > 1) {
+                    manualStaffCount--;
+                    staffCountDisplay.textContent = manualStaffCount;
+                    updateStaffRecommendation();
+                    scheduleCalculation();
+                }
+            });
+            
+            increaseStaffBtn.addEventListener('click', function() {
+                if (manualStaffCount < 10) {
+                    manualStaffCount++;
+                    staffCountDisplay.textContent = manualStaffCount;
+                    updateStaffRecommendation();
+                    scheduleCalculation();
+                }
+            });
+            
+            // Обновление рекомендации по количеству сотрудников
+            function updateStaffRecommendation() {
+                recommendedStaffCount.textContent = currentRecommendedStaff;
+                
+                if (staffModeManual.checked) {
+                    if (manualStaffCount < currentRecommendedStaff) {
+                        staffRecommendation.innerHTML = `Рекомендуется: <span class="staff-warning">${currentRecommendedStaff}</span> сотрудников. Вы выбрали: <span class="staff-warning">${manualStaffCount}</span> (меньше рекомендованного)`;
+                    } else if (manualStaffCount > currentRecommendedStaff) {
+                        staffRecommendation.innerHTML = `Рекомендуется: <span class="staff-ok">${currentRecommendedStaff}</span> сотрудников. Вы выбрали: <span class="staff-ok">${manualStaffCount}</span> (больше рекомендованного)`;
+                    } else {
+                        staffRecommendation.innerHTML = `Рекомендуется: <span class="staff-ok">${currentRecommendedStaff}</span> сотрудников. Вы выбрали: <span class="staff-ok">${manualStaffCount}</span> (оптимально)`;
+                    }
+                } else {
+                    staffRecommendation.innerHTML = `Рекомендуется: <span class="staff-ok">${currentRecommendedStaff}</span> сотрудников`;
+                }
+            }
+            
+            window.updateStaffRecommendation = updateStaffRecommendation;
+        }
         
         // Генерация списка дополнительных услуг
         function generateServicesList() {
@@ -1970,6 +2158,14 @@
             pollutionLevelSelect.value = '1.0';
             desiredTimeInput.value = 8;
             
+            // Сброс выбора количества сотрудников
+            staffModeAuto.checked = true;
+            staffModeManual.checked = false;
+            manualStaffSelection.style.display = 'none';
+            autoStaffInfo.style.display = 'block';
+            manualStaffCount = 2;
+            staffCountDisplay.textContent = '2';
+            
             // Сброс экономического режима
             economyModeToggle.checked = true;
             economyStatus.textContent = 'ВКЛ';
@@ -2050,6 +2246,13 @@
             marginPercentElement.textContent = '-';
             economyAnalysisElement.innerHTML = '';
             finalPriceElement.innerHTML = '-';
+            
+            // Сброс рекомендации по персоналу
+            currentRecommendedStaff = 2;
+            recommendedStaffCount.textContent = '2';
+            if (window.updateStaffRecommendation) {
+                window.updateStaffRecommendation();
+            }
             
             // Показ сообщения о сбросе
             showResetNotification();
@@ -2176,14 +2379,27 @@
                 economyMode
             );
             
+            // Сохраняем рекомендованное количество сотрудников
+            currentRecommendedStaff = recommendedStaff.rec;
+            if (window.updateStaffRecommendation) {
+                window.updateStaffRecommendation();
+            }
+            
             // Расчет необходимого количества сотрудников по желаемому времени
             const timeBasedStaff = Math.ceil(totalManHours / desiredTime);
             
             // Итоговое количество сотрудников
-            let staffRequired = Math.max(recommendedStaff.rec, timeBasedStaff);
-            
-            // Но не меньше минимального и не больше максимального
-            staffRequired = Math.max(recommendedStaff.min, Math.min(staffRequired, recommendedStaff.max));
+            let staffRequired;
+            if (staffModeManual.checked) {
+                // Если выбран ручной режим - используем выбранное пользователем количество
+                staffRequired = manualStaffCount;
+            } else {
+                // Автоматический режим
+                staffRequired = Math.max(recommendedStaff.rec, timeBasedStaff);
+                
+                // Но не меньше минимального и не больше максимального
+                staffRequired = Math.max(recommendedStaff.min, Math.min(staffRequired, recommendedStaff.max));
+            }
             
             // Время на одного сотрудника
             const timePerWorker = totalManHours / staffRequired;
@@ -2226,9 +2442,9 @@
             let recommendationText = "";
             
             if (staffRequired === 1) {
-                recommendationText = `<i class="fas fa-user-check"></i> Для уборки ${calculatedArea} м² экономически выгодно использовать 1 сотрудника. Работа займет ${formatTime(timePerWorker)}.`;
+                recommendationText = `<i class="fas fa-user-check"></i> Для уборки ${calculatedArea} м² ${staffModeManual.checked ? 'вы выбрали' : 'экономически выгодно использовать'} 1 сотрудника. Работа займет ${formatTime(timePerWorker)}.`;
             } else {
-                recommendationText = `<i class="fas fa-users"></i> Для уборки ${calculatedArea} м² рекомендуется бригада из ${staffRequired} сотрудников. Каждый отработает ${formatTime(timePerWorker)}.`;
+                recommendationText = `<i class="fas fa-users"></i> Для уборки ${calculatedArea} м² ${staffModeManual.checked ? 'вы выбрали' : 'рекомендуется'} бригада из ${staffRequired} сотрудников. Каждый отработает ${formatTime(timePerWorker)}.`;
             }
             
             // Особые примечания с учетом коэффициента загрязнения
@@ -2259,6 +2475,15 @@
             
             if (logisticsCost.total > 0) {
                 recommendationText += ` <span style="color: #ffc107;"><i class="fas fa-truck"></i> Включены логистические услуги: ${formatMoney(logisticsCost.total)}.</span>`;
+            }
+            
+            // Предупреждение, если выбран ручной режим и количество сотрудников отличается от рекомендованного
+            if (staffModeManual.checked) {
+                if (manualStaffCount < currentRecommendedStaff) {
+                    recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Вы выбрали меньше сотрудников, чем рекомендовано (${currentRecommendedStaff}). Работа займет больше времени.</span>`;
+                } else if (manualStaffCount > currentRecommendedStaff) {
+                    recommendationText += ` <span style="color: #28a745;"><i class="fas fa-check-circle"></i> Вы выбрали больше сотрудников, чем рекомендовано (${currentRecommendedStaff}). Работа будет выполнена быстрее.</span>`;
+                }
             }
             
             recommendationMainElement.innerHTML = recommendationText;
@@ -2335,6 +2560,17 @@
             }
             
             planHTML += `</div>`;
+            
+            // Информация о режиме выбора персонала
+            if (staffModeManual.checked) {
+                planHTML += `<div class="${manualStaffCount < currentRecommendedStaff ? 'economy-warning' : manualStaffCount > currentRecommendedStaff ? 'economy-ok' : 'info-text'}">`;
+                planHTML += `<i class="fas fa-user-edit"></i> Ручной выбор персонала: ${manualStaffCount} сотрудников (рекомендовано: ${currentRecommendedStaff})`;
+                planHTML += `</div>`;
+            } else {
+                planHTML += `<div class="info-text">`;
+                planHTML += `<i class="fas fa-robot"></i> Автоматический подбор персонала: ${staffRequired} сотрудников`;
+                planHTML += `</div>`;
+            }
             
             // Особые примечания
             if (cleaningType === 'maintenance' && area >= 200 && staffRequired < 2 && economyMode) {
@@ -2472,6 +2708,19 @@
                 </div>`;
             }
             
+            // Рекомендация по изменению количества сотрудников в ручном режиме
+            if (staffModeManual.checked) {
+                if (manualStaffCount < currentRecommendedStaff) {
+                    planHTML += `<div class="economy-warning" style="margin-top: 10px;">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Рекомендация:</strong> Увеличение количества сотрудников до ${currentRecommendedStaff} сократит время работы на ${formatTime(timePerWorker - (totalManHours / currentRecommendedStaff))} на каждого сотрудника.
+                    </div>`;
+                } else if (manualStaffCount > currentRecommendedStaff) {
+                    planHTML += `<div class="economy-ok" style="margin-top: 10px;">
+                        <i class="fas fa-check-circle"></i> <strong>Преимущество:</strong> Большее количество сотрудников сократит общее время выполнения работы.
+                    </div>`;
+                }
+            }
+            
             planHTML += `</div>`;
             planHTML += '</div>';
             
@@ -2570,6 +2819,10 @@
         carServiceCheckbox.addEventListener('change', scheduleCalculation);
         equipmentDeliveryCheckbox.addEventListener('change', scheduleCalculation);
         
+        // Обработчики для выбора количества сотрудников
+        staffModeAuto.addEventListener('change', scheduleCalculation);
+        staffModeManual.addEventListener('change', scheduleCalculation);
+        
         document.querySelectorAll('input[name="cleaningType"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const cleaningType = this.value;
@@ -2603,6 +2856,9 @@
         window.addEventListener('DOMContentLoaded', function() {
             // Генерация списка услуг
             generateServicesList();
+            
+            // Инициализация выбора количества сотрудников
+            initStaffSelection();
             
             // Установим начальные значения
             areaSlider.value = areaInput.value;
