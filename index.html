@@ -1296,6 +1296,11 @@
             <div class="dry-cleaning-section">
                 <h2 class="section-title"><i class="fas fa-tshirt"></i> Услуги химчистки</h2>
                 
+                <!-- ДОБАВЛЕНА ПОМЕТКА О МИНИМАЛЬНОМ ЗАКАЗЕ -->
+                <div class="info-text" style="margin-bottom: 15px; padding: 10px; background-color: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                    <i class="fas fa-exclamation-circle"></i> <strong>Минимальный заказ:</strong> Стоимость заказа только химчистки (без клининга) должна быть не менее 5 000 руб.
+                </div>
+                
                 <div class="feature-item">
                     <div class="feature-icon" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);">
                         <i class="fas fa-tshirt"></i>
@@ -1467,7 +1472,7 @@
         const MIN_HOURS_FOR_EFFICIENCY = 5; // Минимальное количество часов для эффективного использования сотрудника
         const CAR_SERVICE_COST = 4500; // Выезд автомобиля
         const EQUIPMENT_DELIVERY_COST = 1500; // Доставка оборудования
-        const MIN_DRY_CLEANING_ORDER = 3000; // Минимальная сумма заказа химчистки
+        const MIN_DRY_CLEANING_ORDER = 5000; // Минимальная сумма заказа только химчистки
         
         // Нормативы времени в человеко-часах на м² (основные диапазоны)
         const cleaningNorms = {
@@ -1891,7 +1896,7 @@
             return { totalTime: totalAdditionalTime, totalCost: totalAdditionalCost };
         }
         
-        // Обновление отображения стоимости услуг химчистки
+        // Обновление отображения стоимости услуг химчистки (без автоматического применения минимума 3000)
         function updateDryCleaningTotal() {
             let totalDryCleaningCost = 0;
             
@@ -1918,11 +1923,6 @@
                     totalDryCleaningCost += serviceCost;
                 });
             });
-            
-            // Проверяем минимальную сумму заказа химчистки
-            if (totalDryCleaningCost > 0 && totalDryCleaningCost < MIN_DRY_CLEANING_ORDER) {
-                totalDryCleaningCost = MIN_DRY_CLEANING_ORDER;
-            }
             
             dryCleaningTotal.innerHTML = `<i class="fas fa-receipt"></i> Услуги химчистки: ${formatMoney(totalDryCleaningCost)}`;
             
@@ -2224,9 +2224,16 @@
             const additionalTimeHours = additionalResult.totalTime;
             const additionalCost = additionalResult.totalCost;
             
-            // Расчет стоимости услуг химчистки
+            // Расчет стоимости услуг химчистки (без применения минимума)
             const dryCleaningResult = updateDryCleaningTotal();
-            const dryCleaningCost = dryCleaningResult.totalCost;
+            let dryCleaningCost = dryCleaningResult.totalCost;
+            
+            // Проверяем, нужно ли применять минимальный заказ (только если нет клининга)
+            if (dryCleaningCost > 0 && area <= 0 && additionalCost <= 0 && dryCleaningCost < MIN_DRY_CLEANING_ORDER) {
+                dryCleaningCost = MIN_DRY_CLEANING_ORDER;
+                // Обновляем отображение с учетом минимального заказа
+                dryCleaningTotal.innerHTML = `<i class="fas fa-receipt"></i> Услуги химчистки: ${formatMoney(dryCleaningCost)} (минимальный заказ)`;
+            }
             
             // Получение стоимости логистических услуг
             const logisticsCost = getLogisticsCost();
@@ -2295,9 +2302,9 @@
             if (dryCleaningCost > 0) {
                 recommendationText += ` <span style="color: #9c27b0;"><i class="fas fa-tshirt"></i> В заказ включены услуги химчистки на сумму ${formatMoney(dryCleaningCost)}.</span>`;
                 
-                // Проверяем минимальный заказ химчистки
-                if (dryCleaningCost >= MIN_DRY_CLEANING_ORDER) {
-                    recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Внимание: минимальная сумма заказа химчистки составляет ${formatMoney(MIN_DRY_CLEANING_ORDER)}.</span>`;
+                // Проверяем минимальный заказ химчистки (только если нет клининга)
+                if (area <= 0 && additionalCost <= 0 && dryCleaningCost < MIN_DRY_CLEANING_ORDER) {
+                    recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Внимание: минимальная сумма заказа только химчистки составляет ${formatMoney(MIN_DRY_CLEANING_ORDER)}. Стоимость заказа была увеличена до минимальной.</span>`;
                 }
             }
             
