@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор клинингового персонала Jullife</title>
+    <title>Калькулятор клинингового персонала и химчистки Jullife</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -22,7 +22,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             background-color: white;
             border-radius: 20px;
@@ -82,7 +82,7 @@
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             position: relative;
             font-weight: 300;
@@ -108,20 +108,32 @@
             border-right: 1px solid #eee;
         }
         
-        .results-section {
+        .dry-cleaning-section {
             flex: 1;
             min-width: 350px;
             padding-left: 30px;
         }
         
-        @media (max-width: 1100px) {
-            .input-section, .additional-services, .results-section {
+        .results-section {
+            width: 100%;
+            padding: 30px;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 1200px) {
+            .input-section, .additional-services, .dry-cleaning-section {
                 padding: 20px 0;
                 border: none;
+                min-width: 100%;
             }
             
             .calculator {
                 flex-direction: column;
+            }
+            
+            .results-section {
+                padding: 20px 0;
             }
         }
         
@@ -916,7 +928,6 @@
             text-align: center;
         }
         
-        /* Новый стиль для выбора количества сотрудников */
         .staff-selection-section {
             background: linear-gradient(135deg, #eef2ff 0%, #e0e6ff 100%);
             padding: 20px;
@@ -977,6 +988,88 @@
             color: #28a745;
             font-weight: 600;
         }
+        
+        /* Новые стили для блока химчистки */
+        .dry-cleaning-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f8faff;
+            border-radius: 12px;
+            border-left: 5px solid #9c27b0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .dry-cleaning-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .dry-cleaning-info {
+            flex: 1;
+            padding-right: 15px;
+        }
+        
+        .dry-cleaning-name {
+            font-weight: 600;
+            color: #182848;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .dry-cleaning-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .dry-cleaning-price {
+            color: #9c27b0;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .dry-cleaning-category {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #7b1fa2;
+        }
+        
+        .dry-cleaning-category-title {
+            font-size: 1.2rem;
+            color: #4a148c;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1bee7;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dry-cleaning-category-title i {
+            margin-right: 10px;
+            color: #7b1fa2;
+        }
+        
+        .dry-cleaning-total {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-weight: 600;
+            text-align: center;
+            border: 2px solid #ba68c8;
+        }
+        
+        .dry-cleaning-icon {
+            color: #9c27b0;
+        }
     </style>
 </head>
 <body>
@@ -986,9 +1079,9 @@
                 <div class="logo-icon">
                     <i class="fas fa-broom"></i>
                 </div>
-                <h1>Калькулятор клинингового персонала Jullife</h1>
+                <h1>Калькулятор клинингового персонала и химчистки Jullife</h1>
             </div>
-            <p class="subtitle">Профессиональный расчет времени, персонала и стоимости уборки для объектов от 10 до 1500 м²</p>
+            <p class="subtitle">Профессиональный расчет времени, персонала и стоимости уборки и химчистки для объектов от 0 до 1500 м².</p>
         </header>
         
         <div class="calculator">
@@ -1017,13 +1110,13 @@
                 <div class="form-group">
                     <label for="area"><i class="fas fa-vector-square"></i> Площадь помещения:</label>
                     <div class="input-with-unit">
-                        <input type="number" id="area" min="10" max="5000" value="100">
+                        <input type="number" id="area" min="0" max="5000" value="100">
                         <div class="unit">м²</div>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="10" max="1500" value="100" class="slider" id="areaSlider">
+                        <input type="range" min="0" max="1500" value="100" class="slider" id="areaSlider">
                         <div class="slider-labels">
-                            <span>10 м²</span>
+                            <span>0 м²</span>
                             <span>500 м²</span>
                             <span>1500 м²</span>
                         </div>
@@ -1065,16 +1158,6 @@
                     <div class="info-text">Коэффициенты умножаются на время уборки и влияют на стоимость</div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="desiredTime"><i class="fas fa-clock"></i> Желаемое время выполнения:</label>
-                    <div class="input-with-unit">
-                        <input type="number" id="desiredTime" min="1" max="120" value="8" step="0.5">
-                        <div class="unit">часов</div>
-                    </div>
-                    <div class="info-text" id="timeHint">Для поддерживающей: 4-8 ч, для генеральной: 8-12 ч, после ремонта: 12-48 ч</div>
-                </div>
-                
-                <!-- НОВАЯ СЕКЦИЯ: Выбор количества сотрудников -->
                 <div class="staff-selection-section">
                     <h3 class="section-title" style="font-size: 1.2rem; border-bottom: 2px solid #4b6cb7;">
                         <i class="fas fa-user-friends"></i> Выбор количества сотрудников
@@ -1109,11 +1192,6 @@
                         
                         <div class="staff-recommendation" id="staffRecommendation">
                             Рекомендуется: <span id="recommendedStaffCount">2</span> сотрудника
-                        </div>
-                        
-                        <div class="info-text" style="margin-top: 10px;">
-                            Выберите количество сотрудников, которые будут работать на объекте. 
-                            Расчет времени и стоимости будет пересчитан с учетом вашего выбора.
                         </div>
                     </div>
                     
@@ -1182,7 +1260,7 @@
                 
                 <div class="button-group">
                     <button class="btn" id="calculateBtn">
-                        <i class="fas fa-calculator"></i> Рассчитать персонал и стоимость
+                        <i class="fas fa-calculator"></i> Рассчитать полную стоимость
                     </button>
                     <button class="btn btn-reset" id="resetBtn">
                         <i class="fas fa-redo"></i> Сбросить все параметры
@@ -1195,7 +1273,7 @@
             </div>
             
             <div class="additional-services">
-                <h2 class="section-title"><i class="fas fa-plus-circle"></i> Дополнительные услуги</h2>
+                <h2 class="section-title"><i class="fas fa-plus-circle"></i> Дополнительные услуги клининга</h2>
                 
                 <div class="feature-item">
                     <div class="feature-icon">
@@ -1213,193 +1291,189 @@
                 <div class="additional-total" id="additionalServicesTotal">
                     <i class="fas fa-receipt"></i> Дополнительные услуги: 0 часов, 0 руб.
                 </div>
+            </div>
+            
+            <div class="dry-cleaning-section">
+                <h2 class="section-title"><i class="fas fa-tshirt"></i> Услуги химчистки</h2>
                 
-                <div class="economy-option" id="economyHint" style="display: none;">
-                    <i class="fas fa-lightbulb"></i> <strong>Экономическая подсказка:</strong> При выборе доп. услуг можно оправдать выход второго сотрудника, что сделает работу быстрее и выгоднее.
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <div class="feature-text">Услуги химчистки</div>
+                </div>
+                
+                <div id="dryCleaningContainer">
+                    <!-- Список услуг химчистки будет сгенерирован JavaScript -->
+                </div>
+                
+                <div class="dry-cleaning-total" id="dryCleaningTotal">
+                    <i class="fas fa-receipt"></i> Услуги химчистки: 0 руб.
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="results-card">
+                <h2 class="results-title"><i class="fas fa-chart-bar"></i> Результаты расчета</h2>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="far fa-clock"></i> Основная уборка:</div>
+                    <div class="result-value" id="baseTime">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="fas fa-plus-circle"></i> Дополнительные услуги клининга:</div>
+                    <div class="result-value" id="additionalTime">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="fas fa-tshirt"></i> Услуги химчистки:</div>
+                    <div class="result-value" id="dryCleaningCostResult">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="fas fa-clock"></i> Общее время уборки:</div>
+                    <div class="result-value" id="totalTime">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="fas fa-users"></i> Количество сотрудников:</div>
+                    <div class="result-value" id="staffRequired">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="fas fa-tachometer-alt"></i> Сложность задачи:</div>
+                    <div class="result-value">
+                        <span id="complexityLevel">-</span>
+                        <span id="complexityBadge" class="complexity-badge"></span>
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="fas fa-user-clock"></i> Затраты времени на 1 сотрудника:</div>
+                    <div class="result-value" id="timePerWorker">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="fas fa-money-bill-wave"></i> Стоимость основной уборки:</div>
+                    <div class="result-value" id="mainCleaningCostResult">-</div>
+                </div>
+                
+                <div class="highlight" id="recommendationMain">
+                    <i class="fas fa-magic"></i> Заполните параметры и нажмите "Рассчитать"
                 </div>
             </div>
             
-            <div class="results-section">
-                <div class="results-card">
-                    <h2 class="results-title"><i class="fas fa-chart-bar"></i> Результаты расчета</h2>
-                    
-                    <div class="result-item">
-                        <div class="result-label"><i class="far fa-clock"></i> Основная уборка:</div>
-                        <div class="result-value" id="baseTime">-</div>
-                    </div>
-                    
-                    <div class="result-item">
-                        <div class="result-label"><i class="fas fa-plus-circle"></i> Дополнительные услуги:</div>
-                        <div class="result-value" id="additionalTime">-</div>
-                    </div>
-                    
-                    <div class="result-item">
-                        <div class="result-label"><i class="fas fa-clock"></i> Общее время уборки:</div>
-                        <div class="result-value" id="totalTime">-</div>
-                    </div>
-                    
-                    <div class="result-item">
-                        <div class="result-label"><i class="fas fa-users"></i> Количество сотрудников:</div>
-                        <div class="result-value" id="staffRequired">-</div>
-                    </div>
-                    
-                    <div class="result-item">
-                        <div class="result-label"><i class="fas fa-tachometer-alt"></i> Сложность задачи:</div>
-                        <div class="result-value">
-                            <span id="complexityLevel">-</span>
-                            <span id="complexityBadge" class="complexity-badge"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="result-item">
-                        <div class="result-label"><i class="fas fa-user-clock"></i> Затраты времени на 1 сотрудника:</div>
-                        <div class="result-value" id="timePerWorker">-</div>
-                    </div>
-                    
-                    <div class="result-item">
-                        <div class="result-label"><i class="fas fa-money-bill-wave"></i> Стоимость основной уборки:</div>
-                        <div class="result-value" id="mainCleaningCostResult">-</div>
-                    </div>
-                    
-                    <div class="time-breakdown">
-                        <div class="breakdown-item">
-                            <div class="breakdown-label">Базовое время (чел-часы):</div>
-                            <div class="breakdown-value" id="breakdownBase">-</div>
-                        </div>
-                        <div class="breakdown-item">
-                            <div class="breakdown-label">Коэффициент объекта:</div>
-                            <div class="breakdown-value" id="breakdownObject">-</div>
-                        </div>
-                        <div class="breakdown-item">
-                            <div class="breakdown-label">Коэффициент загрязнения:</div>
-                            <div class="breakdown-value" id="breakdownPollution">-</div>
-                        </div>
-                        <div class="breakdown-item">
-                            <div class="breakdown-label">Доп. услуги (чел-часы):</div>
-                            <div class="breakdown-value" id="breakdownAdditional">-</div>
-                        </div>
-                    </div>
-                    
-                    <div class="table-based-info" id="tableInfo">
-                        <i class="fas fa-info-circle"></i> Заполните параметры и нажмите "Рассчитать"
-                    </div>
-                    
-                    <div class="highlight" id="recommendationMain">
-                        <i class="fas fa-magic"></i> Заполните параметры и нажмите "Рассчитать"
-                    </div>
+            <div class="cost-section" id="costSection" style="display: none;">
+                <h2 class="cost-title"><i class="fas fa-money-bill-wave"></i> Экономический расчет и маржинальность</h2>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Количество сотрудников:</div>
+                    <div class="cost-value" id="costStaff">-</div>
                 </div>
                 
-                <div class="cost-section" id="costSection" style="display: none;">
-                    <h2 class="cost-title"><i class="fas fa-money-bill-wave"></i> Экономический расчет</h2>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Количество сотрудников:</div>
-                        <div class="cost-value" id="costStaff">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Стоимость выхода 1 сотрудника:</div>
-                        <div class="cost-value">4 500 руб.</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Стоимость основной уборки (из прайса):</div>
-                        <div class="cost-value" id="mainCleaningCost">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Стоимость дополнительных услуг:</div>
-                        <div class="cost-value" id="additionalCost">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Выезд автомобиля:</div>
-                        <div class="cost-value" id="carCost">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Доставка оборудования:</div>
-                        <div class="cost-value" id="equipmentCost">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Общая стоимость заказа:</div>
-                        <div class="cost-value" id="totalOrderCost">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Скидка:</div>
-                        <div class="cost-value" id="discountAmount">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Стоимость после скидки:</div>
-                        <div class="cost-value" id="totalAfterDiscount">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Стоимость сотрудников:</div>
-                        <div class="cost-value" id="staffCost">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Прибыль/убыток:</div>
-                        <div class="cost-value" id="profitLoss">-</div>
-                    </div>
-                    
-                    <div class="cost-item">
-                        <div class="cost-label">Маржинальность заказа:</div>
-                        <div class="cost-value cost-total" id="marginPercent">-</div>
-                    </div>
-                    
-                    <div id="economyAnalysis">
-                        <!-- Экономический анализ -->
-                    </div>
+                <div class="cost-item">
+                    <div class="cost-label">Стоимость выхода 1 сотрудника:</div>
+                    <div class="cost-value">4 500 руб.</div>
                 </div>
                 
-                <div class="final-price" id="finalPriceSection" style="display: none;">
-                    <h3><i class="fas fa-receipt"></i> Итоговая стоимость для клиента</h3>
-                    <div id="finalPrice">-</div>
-                    <div class="info-text" style="margin-top: 10px;">Включает все выбранные услуги с учетом скидки</div>
+                <div class="cost-item">
+                    <div class="cost-label">Стоимость основной уборки (из прайса):</div>
+                    <div class="cost-value" id="mainCleaningCost">-</div>
                 </div>
                 
-                <div class="results-card recommendation" id="recommendationCard">
-                    <h2 class="recommendation-title"><i class="fas fa-clipboard-list"></i> Рекомендуемый план работы</h2>
-                    <div id="workPlan">
-                        <p>После расчета появится подробный план работы для вашего объекта.</p>
-                    </div>
-                    <div id="additionalInfo" class="info-text" style="margin-top: 15px;">
-                        <!-- Дополнительная информация -->
-                    </div>
+                <div class="cost-item">
+                    <div class="cost-label">Стоимость дополнительных услуг клининга:</div>
+                    <div class="cost-value" id="additionalCost">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Стоимость услуг химчистки:</div>
+                    <div class="cost-value" id="dryCleaningCost">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Выезд автомобиля:</div>
+                    <div class="cost-value" id="carCost">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Доставка оборудования:</div>
+                    <div class="cost-value" id="equipmentCost">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Общая стоимость заказа:</div>
+                    <div class="cost-value" id="totalOrderCost">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Скидка:</div>
+                    <div class="cost-value" id="discountAmount">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Стоимость после скидки:</div>
+                    <div class="cost-value" id="totalAfterDiscount">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Стоимость сотрудников:</div>
+                    <div class="cost-value" id="staffCost">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Прибыль/убыток:</div>
+                    <div class="cost-value" id="profitLoss">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Маржинальность заказа:</div>
+                    <div class="cost-value cost-total" id="marginPercent">-</div>
+                </div>
+                
+                <div id="economyAnalysis">
+                    <!-- Экономический анализ -->
+                </div>
+            </div>
+            
+            <div class="final-price" id="finalPriceSection" style="display: none;">
+                <h3><i class="fas fa-receipt"></i> Итоговая стоимость для клиента</h3>
+                <div id="finalPrice">-</div>
+                <div class="info-text" style="margin-top: 10px;">Включает все выбранные услуги с учетом скидки</div>
+            </div>
+            
+            <div class="results-card recommendation" id="recommendationCard">
+                <h2 class="recommendation-title"><i class="fas fa-clipboard-list"></i> Рекомендации и выводы по заказу</h2>
+                <div id="workPlan">
+                    <p>После расчета появится подробный план работы для вашего объекта.</p>
+                </div>
+                <div id="additionalInfo" class="info-text" style="margin-top: 15px;">
+                    <!-- Дополнительная информация -->
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            <p><i class="far fa-copyright"></i> Калькулятор клинингового персонала Jullife. Результаты расчета основаны на отраслевых нормативах и являются оценочными. Для точного расчета требуется осмотр объекта.</p>
+            <p><i class="far fa-copyright"></i> Калькулятор клинингового персонала и химчистки Jullife. Результаты расчета основаны на отраслевых нормативах и являются оценочными. Для точного расчета требуется осмотр объекта.</p>
         </div>
     </div>
 
     <script>
-        // Константы стоимости - ИСПРАВЛЕНО: 4000 на 4500
+        // Константы стоимости
         const STAFF_COST_PER_SHIFT = 4500; // Стоимость выхода одного сотрудника
         const MARGIN_TARGET = 0.25; // Целевая маржинальность 25%
         const MIN_HOURS_FOR_EFFICIENCY = 5; // Минимальное количество часов для эффективного использования сотрудника
         const CAR_SERVICE_COST = 4500; // Выезд автомобиля
         const EQUIPMENT_DELIVERY_COST = 1500; // Доставка оборудования
+        const MIN_DRY_CLEANING_ORDER = 3000; // Минимальная сумма заказа химчистки
         
         // Нормативы времени в человеко-часах на м² (основные диапазоны)
         const cleaningNorms = {
-            // Поддерживающая уборка: 0.15-0.25 ч/ч на м²
             maintenance: { min: 0.15, max: 0.25, avg: 0.2 },
-            
-            // Генеральная лайт: 0.3-0.5 ч/ч на м²
             general_light: { min: 0.3, max: 0.5, avg: 0.4 },
-            
-            // Генеральная полная: 0.7-1.2 ч/ч на м²
             general_full: { min: 0.7, max: 1.2, avg: 0.95 },
-            
-            // После ремонта: 1.5-3+ ч/ч на м²
             post_construction: { min: 1.5, max: 3.5, avg: 2.25 }
         };
         
@@ -1412,64 +1486,132 @@
             restaurant: 1.3     // Ресторан (жир, кухня)
         };
         
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Получение цены из таблицы Excel
-        function getPriceFromTable(cleaningType, area) {
-            // Округляем площадь вниз до ближайшего значения из таблицы
-            const roundedArea = Math.floor(area / 10) * 10;
-            let price = 0;
-            
-            // Находим базовую цену в зависимости от типа уборки
-            switch(cleaningType) {
-                case 'maintenance':
-                    // Поддерживающая уборка
-                    if (area <= 30) return 4290;
-                    if (area < 100) {
-                        // Формула: 4290 + 200 за каждые 10 м² сверх 30
-                        const steps = Math.floor((area - 30) / 10);
-                        return 4290 + steps * 200;
-                    } else {
-                        // Формула: для 100 м²: 4290 + 200*6 + 450 за каждые 10 м² сверх 90
-                        const price90 = 4290 + 6 * 200; // 5490
-                        const steps = Math.floor((area - 90) / 10);
-                        return price90 + steps * 450;
-                    }
-                    
-                case 'general_light':
-                    // Генеральная лайт - ИСПРАВЛЕНО: теперь дешевле генеральной полной
-                    if (area <= 30) {
-                        return 5990; // Дешевле генеральной полной
-                    }
-                    // Для 40 м²: 5990, далее +1200 за каждые 10 м²
-                    const stepsLight = Math.floor((area - 30) / 10);
-                    return 5990 + stepsLight * 1200;
-                    
-                case 'general_full':
-                    // Генеральная полная
-                    if (area <= 30) return 12490;
-                    if (area < 100) {
-                        const steps = Math.floor((area - 30) / 10);
-                        return 12490 + steps * 1500;
-                    } else {
-                        const price90 = 12490 + 6 * 1500; // 21490
-                        const steps = Math.floor((area - 90) / 10);
-                        return price90 + steps * 1000;
-                    }
-                    
-                case 'post_construction':
-                    // После ремонта
-                    if (area <= 30) return 13990;
-                    const stepsPost = Math.floor((area - 30) / 10);
-                    return 13990 + stepsPost * 1500;
-                    
-                default:
-                    return 0;
+        // Дополнительные услуги клининга
+        const additionalServices = [
+            { id: 'ironing', name: 'Глажка', time: 0.5, price: 400, unit: '30 мин', type: 'number', icon: 'fas fa-tshirt' },
+            { id: 'extra_30min', name: 'Дополнительные 30 мин работы', time: 0.5, price: 500, unit: '30 мин', type: 'number', icon: 'fas fa-clock' },
+            { id: 'dishes', name: 'Мытье посуды', time: 0.5, price: 500, unit: 'комплект', type: 'number', icon: 'fas fa-utensils' },
+            { id: 'kitchen_module', name: 'Мытье кухонного модуля внутри', time: 0.25, price: 500, unit: 'модуль', type: 'number', icon: 'fas fa-archive' },
+            { id: 'panoramic_window', name: 'Мытьё окна панорамного', time: 0.33, price: 800, unit: 'створка', type: 'number', icon: 'fas fa-window-maximize' },
+            { id: 'standard_window', name: 'Мытьё окна стандартного', time: 0.2, price: 500, unit: 'створка', type: 'number', icon: 'fas fa-window-restore' },
+            { id: 'standard_window_both', name: 'Мытьё окна стандартного (с двух сторон)', time: 0.33, price: 750, unit: 'створка', type: 'number', icon: 'fas fa-exchange-alt' },
+            { id: 'oven', name: 'Мытьё духового шкафа внутри', time: 0.42, price: 500, unit: 'шт.', type: 'number', icon: 'fas fa-temperature-high' },
+            { id: 'balcony_windows', name: 'Мытье окон на балконе/лоджии', time: 1.5, price: 3000, unit: 'комплекс', type: 'number', icon: 'fas fa-door-closed' },
+            { id: 'fridge', name: 'Мытье холодильника внутри', time: 0.42, price: 800, unit: 'шт.', type: 'number', icon: 'fas fa-snowflake' },
+            { id: 'pet_litter', name: 'Уборка лотка домашнего питомца', time: 0.13, price: 500, unit: 'лоток', type: 'number', icon: 'fas fa-paw' },
+            { id: 'balcony', name: 'Уборка на балконе', time: 0.33, price: 500, unit: 'балкон', type: 'number', icon: 'fas fa-warehouse' },
+            { id: 'microwave', name: 'Чистка микроволновой печи (СВЧ) изнутри', time: 0.2, price: 500, unit: 'шт.', type: 'number', icon: 'fas fa-microchip' }
+        ];
+        
+        // Услуги химчистки с ценами с сайта hdclean.ru
+        const dryCleaningServices = [
+            // Химчистка мягкой мебели
+            {
+                category: 'soft_furniture',
+                name: 'Химчистка мягкой мебели',
+                items: [
+                    { id: 'sofa_100_140', name: 'Диван прямой 100-140см', price: 2300, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'sofa_150_190', name: 'Диван прямой 150-190см', price: 3300, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'sofa_200_240', name: 'Диван прямой 200-240см', price: 3900, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'sofa_250_290', name: 'Диван прямой 250-290см', price: 4950, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'sofa_300_340', name: 'Диван прямой 300-340см', price: 5950, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'sofa_350_390', name: 'Диван прямой 350-390см', price: 6800, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'sofa_400_440', name: 'Диван прямой 400-440см', price: 7600, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'corner_sofa_180_240', name: 'Диван угловой 180-240см', price: 4300, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'corner_sofa_250_290', name: 'Диван угловой 250-290см', price: 5450, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'corner_sofa_300_340', name: 'Диван угловой 300-340см', price: 6450, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'corner_sofa_350_390', name: 'Диван угловой 350-390см', price: 7450, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'corner_sofa_400_440', name: 'Диван угловой 400-440см', price: 8450, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'u_sofa_300_340', name: 'Диван П-образный 300-340см', price: 7200, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'u_sofa_350_390', name: 'Диван П-образный 350-390см', price: 8200, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'u_sofa_400_440', name: 'Диван П-образный 400-440см', price: 8800, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'u_sofa_450_490', name: 'Диван П-образный 450-490см', price: 9600, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'armchair_50_60', name: 'Кресло 50-60см', price: 1350, unit: 'шт.', icon: 'fas fa-chair' },
+                    { id: 'chair_with_back', name: 'Стул с мягкой спинкой', price: 420, unit: 'шт.', icon: 'fas fa-chair' },
+                    { id: 'chair_without_back', name: 'Стул без мягкой спинки', price: 350, unit: 'шт.', icon: 'fas fa-chair' },
+                    { id: 'kitchen_corner', name: 'Кухонный уголок', price: 2350, unit: 'шт.', icon: 'fas fa-utensils' },
+                    { id: 'ottoman_50', name: 'Пуф/Банкетка 50*50см', price: 700, unit: 'шт.', icon: 'fas fa-cube' },
+                    { id: 'ottoman_60_100', name: 'Пуф/Банкетка 60-100*60-100см', price: 1100, unit: 'шт.', icon: 'fas fa-cube' },
+                    { id: 'sofa_pillow_50', name: 'Подушка дивана 50х50', price: 200, unit: 'шт.', icon: 'fas fa-square' },
+                    { id: 'sofa_pillow_100', name: 'Подушка дивана 100х100', price: 400, unit: 'шт.', icon: 'fas fa-square' },
+                    { id: 'seat_50_60', name: 'Посадочное место 50*60см', price: 850, unit: 'шт.', icon: 'fas fa-chair' },
+                    { id: 'sofa_bed_120_140', name: 'Спальное место дивана 120-140*60-80см', price: 850, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'sofa_bed_folding', name: 'Спальное место дивана (раскладушка)', price: 2550, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'office_chair', name: 'Стул офисный', price: 700, unit: 'шт.', icon: 'fas fa-chair-office' },
+                    { id: 'computer_chair', name: 'Офисное кресло, компьютерный стул', price: 700, unit: 'шт.', icon: 'fas fa-chair-office' },
+                    { id: 'bed_chair', name: 'Кресло-кровать', price: 2100, unit: 'шт.', icon: 'fas fa-bed' }
+                ]
+            },
+            // Химчистка кожаной мебели
+            {
+                category: 'leather_furniture',
+                name: 'Химчистка кожаной мебели',
+                items: [
+                    { id: 'leather_sofa_100_140', name: 'Диван прямой 100-140см', price: 2750, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_sofa_150_190', name: 'Диван прямой 150-190см', price: 4100, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_sofa_200_240', name: 'Диван прямой 200-240см', price: 5400, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_sofa_250_290', name: 'Диван прямой 250-290см', price: 6800, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_sofa_300_340', name: 'Диван прямой 300-340см', price: 8200, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_corner_sofa_180_240', name: 'Диван угловой 180-240см', price: 5500, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_corner_sofa_250_290', name: 'Диван угловой 250-290см', price: 6700, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_corner_sofa_300_340', name: 'Диван угловой 300-340см', price: 8900, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_u_sofa_300_340', name: 'Диван П-образный 300-340см', price: 10400, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_u_sofa_350_390', name: 'Диван П-образный 350-390см', price: 11600, unit: 'шт.', icon: 'fas fa-couch' },
+                    { id: 'leather_armchair_50_60', name: 'Кресло 50-60см', price: 2100, unit: 'шт.', icon: 'fas fa-chair' },
+                    { id: 'leather_chair_with_back', name: 'Стул с мягкой спинкой', price: 800, unit: 'шт.', icon: 'fas fa-chair' },
+                    { id: 'leather_chair_without_back', name: 'Стул без мягкой спинки', price: 600, unit: 'шт.', icon: 'fas fa-chair' },
+                    { id: 'leather_ottoman', name: 'Пуф/Банкетка', price: 1000, unit: 'шт.', icon: 'fas fa-cube' },
+                    { id: 'leather_sofa_bed', name: 'Спальное место кожаного дивана', price: 850, unit: 'шт.', icon: 'fas fa-bed' }
+                ]
+            },
+            // Химчистка матрасов
+            {
+                category: 'mattresses',
+                name: 'Химчистка матрасов',
+                items: [
+                    { id: 'child_mattress_one_side', name: 'Детский 60-80*100-120см (одна сторона)', price: 850, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'child_mattress_two_sides', name: 'Детский 60-80*100-120см (две стороны)', price: 1650, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'single_mattress_one_side', name: 'Односпальный 80-95*200см (одна сторона)', price: 1650, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'single_mattress_two_sides', name: 'Односпальный 80-95*200см (две стороны)', price: 2550, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'double_mattress_one_side', name: 'Полуторный 100-140*200см (одна сторона)', price: 2550, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'double_mattress_two_sides', name: 'Полуторный 100-140*200см (две стороны)', price: 3750, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'king_mattress_one_side', name: 'Двуспальный 160-200*200см (одна сторона)', price: 3750, unit: 'шт.', icon: 'fas fa-bed' },
+                    { id: 'king_mattress_two_sides', name: 'Двуспальный 160-200*200см (две стороны)', price: 5100, unit: 'шт.', icon: 'fas fa-bed' }
+                ]
+            },
+            // Химчистка ковров (цена за м²)
+            {
+                category: 'carpets',
+                name: 'Химчистка ковров (цена за м²)',
+                items: [
+                    { id: 'carpet_linoleum', name: 'Ковролин', price: 340, unit: 'м²', icon: 'fas fa-rug' },
+                    { id: 'carpet_synthetic', name: 'Синтетика', price: 460, unit: 'м²', icon: 'fas fa-rug' },
+                    { id: 'carpet_long_pile', name: 'Длинный ворс', price: 700, unit: 'м²', icon: 'fas fa-rug' },
+                    { id: 'carpet_cotton_wool', name: 'Хлопок/шерсть', price: 580, unit: 'м²', icon: 'fas fa-rug' }
+                ]
+            },
+            // Химчистка штор
+            {
+                category: 'curtains',
+                name: 'Химчистка штор',
+                items: [
+                    { id: 'curtain_synthetic', name: 'Штора (синтетика)', price: 450, unit: 'шт.', icon: 'fas fa-border-style' },
+                    { id: 'curtain_natural', name: 'Штора (натуральная ткань)', price: 550, unit: 'шт.', icon: 'fas fa-border-style' },
+                    { id: 'curtain_with_lining', name: 'Штора с подкладом', price: 800, unit: 'шт.', icon: 'fas fa-border-style' },
+                    { id: 'roman_no_lining', name: 'Римская штора без подклада', price: 450, unit: 'шт.', icon: 'fas fa-border-style' },
+                    { id: 'roman_with_lining', name: 'Римская штора с подкладом', price: 800, unit: 'шт.', icon: 'fas fa-border-style' },
+                    { id: 'fabric_blinds', name: 'Тканевые жалюзи', price: 550, unit: 'шт.', icon: 'fas fa-border-style' },
+                    { id: 'valance', name: 'Ламбрекен', price: 450, unit: 'шт.', icon: 'fas fa-border-style' },
+                    { id: 'tulle_synthetic', name: 'Тюль (синтетика)', price: 450, unit: 'шт.', icon: 'fas fa-border-style' },
+                    { id: 'tulle_natural', name: 'Тюль (натуральная ткань)', price: 450, unit: 'шт.', icon: 'fas fa-border-style' }
+                ]
             }
-        }
+        ];
         
         // Экономически оправданное количество сотрудников для разных типов уборки
         const economicalStaffRecommendations = {
-            // Поддерживающая уборка (экономический расчет)
             maintenance: [
+                { area: 0, staff: { min: 0, max: 0, rec: 0, minHours: 0, maxHours: 0 } },
                 { area: 50, staff: { min: 1, max: 2, rec: 1, minHours: 2.5, maxHours: 5 } },
                 { area: 100, staff: { min: 1, max: 2, rec: 1, minHours: 5, maxHours: 10 } },
                 { area: 150, staff: { min: 1, max: 2, rec: 1, minHours: 7.5, maxHours: 15 } },
@@ -1481,9 +1623,8 @@
                 { area: 1000, staff: { min: 4, max: 5, rec: 4, minHours: 50, maxHours: 100 } },
                 { area: 1500, staff: { min: 4, max: 6, rec: 5, minHours: 75, maxHours: 150 } }
             ],
-            
-            // Генеральная лайт
             general_light: [
+                { area: 0, staff: { min: 0, max: 0, rec: 0, minHours: 0, maxHours: 0 } },
                 { area: 50, staff: { min: 1, max: 2, rec: 2, minHours: 5, maxHours: 10 } },
                 { area: 100, staff: { min: 2, max: 3, rec: 2, minHours: 10, maxHours: 20 } },
                 { area: 150, staff: { min: 2, max: 3, rec: 2, minHours: 15, maxHours: 30 } },
@@ -1495,9 +1636,8 @@
                 { area: 1000, staff: { min: 5, max: 6, rec: 5, minHours: 100, maxHours: 200 } },
                 { area: 1500, staff: { min: 6, max: 8, rec: 7, minHours: 150, maxHours: 300 } }
             ],
-            
-            // Генеральная полная
             general_full: [
+                { area: 0, staff: { min: 0, max: 0, rec: 0, minHours: 0, maxHours: 0 } },
                 { area: 50, staff: { min: 2, max: 2, rec: 2, minHours: 12.5, maxHours: 25 } },
                 { area: 100, staff: { min: 2, max: 3, rec: 3, minHours: 25, maxHours: 50 } },
                 { area: 150, staff: { min: 3, max: 4, rec: 3, minHours: 37.5, maxHours: 75 } },
@@ -1509,9 +1649,8 @@
                 { area: 1000, staff: { min: 6, max: 7, rec: 6, minHours: 250, maxHours: 500 } },
                 { area: 1500, staff: { min: 8, max: 10, rec: 9, minHours: 375, maxHours: 750 } }
             ],
-            
-            // После ремонта
             post_construction: [
+                { area: 0, staff: { min: 0, max: 0, rec: 0, minHours: 0, maxHours: 0 } },
                 { area: 50, staff: { min: 3, max: 4, rec: 4, minHours: 25, maxHours: 50 } },
                 { area: 100, staff: { min: 4, max: 4, rec: 4, minHours: 50, maxHours: 100 } },
                 { area: 150, staff: { min: 4, max: 5, rec: 5, minHours: 75, maxHours: 150 } },
@@ -1533,46 +1672,28 @@
             veryHigh: { text: "Очень высокая", badge: "high-complexity", desc: "Очень сложная задача, требуется спецоборудование" }
         };
         
-        // Дополнительные услуги с временем и ценами (все с типом 'number' для ввода количества)
-        const additionalServices = [
-            { id: 'ironing', name: 'Глажка', time: 0.5, price: 400, unit: '30 мин', type: 'number', icon: 'fas fa-tshirt' },
-            { id: 'extra_30min', name: 'Дополнительные 30 мин работы', time: 0.5, price: 500, unit: '30 мин', type: 'number', icon: 'fas fa-clock' },
-            { id: 'dishes', name: 'Мытье посуды', time: 0.5, price: 500, unit: 'комплект', type: 'number', icon: 'fas fa-utensils' },
-            { id: 'kitchen_module', name: 'Мытье кухонного модуля внутри', time: 0.25, price: 500, unit: 'модуль', type: 'number', icon: 'fas fa-archive' },
-            { id: 'panoramic_window', name: 'Мытьё окна панорамного', time: 0.33, price: 800, unit: 'створка', type: 'number', icon: 'fas fa-window-maximize' },
-            { id: 'standard_window', name: 'Мытьё окна стандартного', time: 0.2, price: 500, unit: 'створка', type: 'number', icon: 'fas fa-window-restore' },
-            { id: 'standard_window_both', name: 'Мытьё окна стандартного (с двух сторон)', time: 0.33, price: 750, unit: 'створка', type: 'number', icon: 'fas fa-exchange-alt' },
-            { id: 'oven', name: 'Мытьё духового шкафа внутри', time: 0.42, price: 500, unit: 'шт.', type: 'number', icon: 'fas fa-temperature-high' },
-            { id: 'balcony_windows', name: 'Мытье окон на балконе/лоджии', time: 1.5, price: 3000, unit: 'комплекс', type: 'number', icon: 'fas fa-door-closed' },
-            { id: 'fridge', name: 'Мытье холодильника внутри', time: 0.42, price: 800, unit: 'шт.', type: 'number', icon: 'fas fa-snowflake' },
-            { id: 'pet_litter', name: 'Уборка лотка домашнего питомца', time: 0.13, price: 500, unit: 'лоток', type: 'number', icon: 'fas fa-paw' },
-            { id: 'balcony', name: 'Уборка на балконе', time: 0.33, price: 500, unit: 'балкон', type: 'number', icon: 'fas fa-warehouse' },
-            { id: 'microwave', name: 'Чистка микроволновой печи (СВЧ) изнутри', time: 0.2, price: 500, unit: 'шт.', type: 'number', icon: 'fas fa-microchip' }
-        ];
-        
         // DOM элементы
         const areaInput = document.getElementById('area');
         const areaSlider = document.getElementById('areaSlider');
         const objectTypeSelect = document.getElementById('objectType');
         const pollutionLevelSelect = document.getElementById('pollutionLevel');
-        const desiredTimeInput = document.getElementById('desiredTime');
         const calculateBtn = document.getElementById('calculateBtn');
         const resetBtn = document.getElementById('resetBtn');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const servicesContainer = document.getElementById('servicesContainer');
         const additionalServicesTotal = document.getElementById('additionalServicesTotal');
-        const timeHint = document.getElementById('timeHint');
         const economyModeToggle = document.getElementById('economyMode');
         const economyStatus = document.getElementById('economyStatus');
-        const economyHint = document.getElementById('economyHint');
         const costSection = document.getElementById('costSection');
         const discountInput = document.getElementById('discount');
         const discountSlider = document.getElementById('discountSlider');
         const carServiceCheckbox = document.getElementById('carService');
         const equipmentDeliveryCheckbox = document.getElementById('equipmentDelivery');
         const finalPriceSection = document.getElementById('finalPriceSection');
+        const dryCleaningContainer = document.getElementById('dryCleaningContainer');
+        const dryCleaningTotal = document.getElementById('dryCleaningTotal');
         
-        // НОВЫЕ ЭЛЕМЕНТЫ: Выбор количества сотрудников
+        // Элементы для выбора количества сотрудников
         const staffModeAuto = document.getElementById('staffModeAuto');
         const staffModeManual = document.getElementById('staffModeManual');
         const manualStaffSelection = document.getElementById('manualStaffSelection');
@@ -1586,6 +1707,7 @@
         // Элементы для отображения результатов
         const baseTimeElement = document.getElementById('baseTime');
         const additionalTimeElement = document.getElementById('additionalTime');
+        const dryCleaningCostResultElement = document.getElementById('dryCleaningCostResult');
         const totalTimeElement = document.getElementById('totalTime');
         const staffRequiredElement = document.getElementById('staffRequired');
         const complexityLevelElement = document.getElementById('complexityLevel');
@@ -1596,16 +1718,12 @@
         const recommendationCardElement = document.getElementById('recommendationCard');
         const workPlanElement = document.getElementById('workPlan');
         const additionalInfoElement = document.getElementById('additionalInfo');
-        const breakdownBaseElement = document.getElementById('breakdownBase');
-        const breakdownObjectElement = document.getElementById('breakdownObject');
-        const breakdownPollutionElement = document.getElementById('breakdownPollution');
-        const breakdownAdditionalElement = document.getElementById('breakdownAdditional');
-        const tableInfoElement = document.getElementById('tableInfo');
         
         // Элементы для отображения стоимости
         const costStaffElement = document.getElementById('costStaff');
         const mainCleaningCostElement = document.getElementById('mainCleaningCost');
         const additionalCostElement = document.getElementById('additionalCost');
+        const dryCleaningCostElement = document.getElementById('dryCleaningCost');
         const carCostElement = document.getElementById('carCost');
         const equipmentCostElement = document.getElementById('equipmentCost');
         const totalOrderCostElement = document.getElementById('totalOrderCost');
@@ -1620,6 +1738,217 @@
         // Переменные для хранения данных
         let currentRecommendedStaff = 2;
         let manualStaffCount = 2;
+        
+        // Генерация списка дополнительных услуг клининга
+        function generateServicesList() {
+            servicesContainer.innerHTML = '';
+            
+            additionalServices.forEach(service => {
+                const serviceElement = document.createElement('div');
+                serviceElement.className = 'service-item';
+                serviceElement.id = `service-${service.id}`;
+                
+                serviceElement.innerHTML = `
+                    <div class="service-info">
+                        <div class="service-name">
+                            <i class="${service.icon}"></i> ${service.name}
+                        </div>
+                        <div class="service-details">
+                            <span class="service-time"><i class="far fa-clock"></i> ${service.time} ч / ед.</span>
+                            <span class="service-price"><i class="fas fa-ruble-sign"></i> ${formatMoney(service.price)} / ${service.unit}</span>
+                        </div>
+                    </div>
+                    <div class="service-controls">
+                        <input type="number" min="0" max="50" value="0" class="service-quantity" 
+                               id="qty-${service.id}" 
+                               data-time="${service.time}" 
+                               data-price="${service.price}" 
+                               data-unit="${service.unit}"
+                               title="Введите количество (единицы: ${service.unit})"
+                               placeholder="0">
+                        <div class="service-total" id="total-${service.id}">0 руб</div>
+                    </div>
+                `;
+                
+                servicesContainer.appendChild(serviceElement);
+            });
+            
+            // Добавляем обработчики событий для пересчета при изменении
+            addServiceEventListeners();
+        }
+        
+        // Генерация списка услуг химчистки
+        function generateDryCleaningList() {
+            dryCleaningContainer.innerHTML = '';
+            
+            dryCleaningServices.forEach(category => {
+                const categoryElement = document.createElement('div');
+                categoryElement.className = 'dry-cleaning-category';
+                
+                let categoryHTML = `
+                    <h3 class="dry-cleaning-category-title">
+                        <i class="fas ${category.items[0].icon}"></i> ${category.name}
+                    </h3>
+                    <div class="category-items">
+                `;
+                
+                category.items.forEach(item => {
+                    categoryHTML += `
+                        <div class="dry-cleaning-item" id="drycleaning-${item.id}">
+                            <div class="dry-cleaning-info">
+                                <div class="dry-cleaning-name">
+                                    <i class="${item.icon}"></i> ${item.name}
+                                </div>
+                                <div class="dry-cleaning-details">
+                                    <span class="dry-cleaning-price"><i class="fas fa-ruble-sign"></i> ${formatMoney(item.price)} / ${item.unit}</span>
+                                </div>
+                            </div>
+                            <div class="service-controls">
+                                <input type="number" min="0" max="50" value="0" class="service-quantity" 
+                                       id="qty-dry-${item.id}" 
+                                       data-price="${item.price}" 
+                                       data-unit="${item.unit}"
+                                       data-category="${category.category}"
+                                       data-item-name="${item.name}"
+                                       title="Введите количество (единицы: ${item.unit})"
+                                       placeholder="0">
+                                <div class="service-total" id="total-dry-${item.id}">0 руб</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                categoryHTML += `</div>`;
+                categoryElement.innerHTML = categoryHTML;
+                dryCleaningContainer.appendChild(categoryElement);
+            });
+            
+            // Добавляем обработчики событий для услуг химчистки
+            addDryCleaningEventListeners();
+        }
+        
+        // Добавление обработчиков событий для дополнительных услуг клининга
+        function addServiceEventListeners() {
+            additionalServices.forEach(service => {
+                const input = document.getElementById(`qty-${service.id}`);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        updateServiceTotal();
+                        // Запускаем расчет с небольшой задержкой
+                        setTimeout(performCalculation, 300);
+                    });
+                }
+            });
+        }
+        
+        // Добавление обработчиков событий для услуг химчистки
+        function addDryCleaningEventListeners() {
+            dryCleaningServices.forEach(category => {
+                category.items.forEach(item => {
+                    const input = document.getElementById(`qty-dry-${item.id}`);
+                    if (input) {
+                        input.addEventListener('input', function() {
+                            updateDryCleaningTotal();
+                            // Запускаем расчет с небольшой задержкой
+                            setTimeout(performCalculation, 300);
+                        });
+                    }
+                });
+            });
+        }
+        
+        // Обновление отображения времени и стоимости для дополнительных услуг клининга
+        function updateServiceTotal() {
+            let totalAdditionalTime = 0;
+            let totalAdditionalCost = 0;
+            
+            additionalServices.forEach(service => {
+                let serviceTime = 0;
+                let serviceCost = 0;
+                const totalElement = document.getElementById(`total-${service.id}`);
+                const input = document.getElementById(`qty-${service.id}`);
+                
+                if (input && input.value) {
+                    const quantity = parseInt(input.value) || 0;
+                    serviceTime = service.time * quantity;
+                    serviceCost = service.price * quantity;
+                }
+                
+                if (totalElement) {
+                    totalElement.textContent = serviceCost > 0 ? `${formatMoney(serviceCost)}` : '0 руб';
+                    if (serviceCost > 0) {
+                        totalElement.style.color = '#28a745';
+                    } else {
+                        totalElement.style.color = '#182848';
+                    }
+                }
+                
+                totalAdditionalTime += serviceTime;
+                totalAdditionalCost += serviceCost;
+            });
+            
+            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги клининга: ${totalAdditionalTime.toFixed(1)} часов, ${formatMoney(totalAdditionalCost)}`;
+            return { totalTime: totalAdditionalTime, totalCost: totalAdditionalCost };
+        }
+        
+        // Обновление отображения стоимости услуг химчистки
+        function updateDryCleaningTotal() {
+            let totalDryCleaningCost = 0;
+            
+            dryCleaningServices.forEach(category => {
+                category.items.forEach(item => {
+                    let serviceCost = 0;
+                    const totalElement = document.getElementById(`total-dry-${item.id}`);
+                    const input = document.getElementById(`qty-dry-${item.id}`);
+                    
+                    if (input && input.value) {
+                        const quantity = parseInt(input.value) || 0;
+                        serviceCost = item.price * quantity;
+                    }
+                    
+                    if (totalElement) {
+                        totalElement.textContent = serviceCost > 0 ? `${formatMoney(serviceCost)}` : '0 руб';
+                        if (serviceCost > 0) {
+                            totalElement.style.color = '#9c27b0';
+                        } else {
+                            totalElement.style.color = '#182848';
+                        }
+                    }
+                    
+                    totalDryCleaningCost += serviceCost;
+                });
+            });
+            
+            // Проверяем минимальную сумму заказа химчистки
+            if (totalDryCleaningCost > 0 && totalDryCleaningCost < MIN_DRY_CLEANING_ORDER) {
+                totalDryCleaningCost = MIN_DRY_CLEANING_ORDER;
+            }
+            
+            dryCleaningTotal.innerHTML = `<i class="fas fa-receipt"></i> Услуги химчистки: ${formatMoney(totalDryCleaningCost)}`;
+            
+            return {
+                totalCost: totalDryCleaningCost
+            };
+        }
+        
+        // Получение стоимости логистических услуг
+        function getLogisticsCost() {
+            let logisticsCost = 0;
+            
+            if (carServiceCheckbox && carServiceCheckbox.checked) {
+                logisticsCost += CAR_SERVICE_COST;
+            }
+            
+            if (equipmentDeliveryCheckbox && equipmentDeliveryCheckbox.checked) {
+                logisticsCost += EQUIPMENT_DELIVERY_COST;
+            }
+            
+            return {
+                total: logisticsCost,
+                car: carServiceCheckbox.checked ? CAR_SERVICE_COST : 0,
+                equipment: equipmentDeliveryCheckbox.checked ? EQUIPMENT_DELIVERY_COST : 0
+            };
+        }
         
         // Инициализация выбора количества сотрудников
         function initStaffSelection() {
@@ -1681,246 +2010,6 @@
             window.updateStaffRecommendation = updateStaffRecommendation;
         }
         
-        // Генерация списка дополнительных услуг
-        function generateServicesList() {
-            servicesContainer.innerHTML = '';
-            
-            additionalServices.forEach(service => {
-                const serviceElement = document.createElement('div');
-                serviceElement.className = 'service-item';
-                serviceElement.id = `service-${service.id}`;
-                
-                serviceElement.innerHTML = `
-                    <div class="service-info">
-                        <div class="service-name">
-                            <i class="${service.icon}"></i> ${service.name}
-                        </div>
-                        <div class="service-details">
-                            <span class="service-time"><i class="far fa-clock"></i> ${service.time} ч / ед.</span>
-                            <span class="service-price"><i class="fas fa-ruble-sign"></i> ${formatMoney(service.price)} / ${service.unit}</span>
-                        </div>
-                    </div>
-                    <div class="service-controls">
-                        <input type="number" min="0" max="50" value="0" class="service-quantity" 
-                               id="qty-${service.id}" 
-                               data-time="${service.time}" 
-                               data-price="${service.price}" 
-                               data-unit="${service.unit}"
-                               title="Введите количество (единицы: ${service.unit})"
-                               placeholder="0">
-                        <div class="service-total" id="total-${service.id}">0 руб</div>
-                    </div>
-                `;
-                
-                servicesContainer.appendChild(serviceElement);
-            });
-            
-            // Добавляем обработчики событий для пересчета при изменении
-            addServiceEventListeners();
-        }
-        
-        // Добавление обработчиков событий для дополнительных услуг
-        function addServiceEventListeners() {
-            additionalServices.forEach(service => {
-                const input = document.getElementById(`qty-${service.id}`);
-                if (input) {
-                    input.addEventListener('input', function() {
-                        updateServiceTotal();
-                        showEconomyHint();
-                        // Запускаем расчет с небольшой задержкой
-                        setTimeout(performCalculation, 300);
-                    });
-                }
-            });
-        }
-        
-        // Показать экономическую подсказку при выборе доп. услуг
-        function showEconomyHint() {
-            const result = updateServiceTotal();
-            if (result.totalTime > 2) {
-                economyHint.style.display = 'block';
-            } else {
-                economyHint.style.display = 'none';
-            }
-        }
-        
-        // Обновление отображения времени и стоимости для услуги
-        function updateServiceTotal() {
-            let totalAdditionalTime = 0;
-            let totalAdditionalCost = 0;
-            
-            additionalServices.forEach(service => {
-                let serviceTime = 0;
-                let serviceCost = 0;
-                const totalElement = document.getElementById(`total-${service.id}`);
-                const input = document.getElementById(`qty-${service.id}`);
-                
-                if (input && input.value) {
-                    const quantity = parseInt(input.value) || 0;
-                    serviceTime = service.time * quantity;
-                    serviceCost = service.price * quantity;
-                }
-                
-                if (totalElement) {
-                    totalElement.textContent = serviceCost > 0 ? `${formatMoney(serviceCost)}` : '0 руб';
-                    if (serviceCost > 0) {
-                        totalElement.style.color = '#28a745';
-                    } else {
-                        totalElement.style.color = '#182848';
-                    }
-                }
-                
-                totalAdditionalTime += serviceTime;
-                totalAdditionalCost += serviceCost;
-            });
-            
-            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги: ${totalAdditionalTime.toFixed(1)} часов, ${formatMoney(totalAdditionalCost)}`;
-            return { totalTime: totalAdditionalTime, totalCost: totalAdditionalCost };
-        }
-        
-        // Получение стоимости логистических услуг
-        function getLogisticsCost() {
-            let logisticsCost = 0;
-            let logisticsDetails = '';
-            
-            if (carServiceCheckbox && carServiceCheckbox.checked) {
-                logisticsCost += CAR_SERVICE_COST;
-                logisticsDetails += 'Выезд автомобиля: ' + formatMoney(CAR_SERVICE_COST) + '<br>';
-            }
-            
-            if (equipmentDeliveryCheckbox && equipmentDeliveryCheckbox.checked) {
-                logisticsCost += EQUIPMENT_DELIVERY_COST;
-                logisticsDetails += 'Доставка оборудования: ' + formatMoney(EQUIPMENT_DELIVERY_COST) + '<br>';
-            }
-            
-            return {
-                total: logisticsCost,
-                car: carServiceCheckbox.checked ? CAR_SERVICE_COST : 0,
-                equipment: equipmentDeliveryCheckbox.checked ? EQUIPMENT_DELIVERY_COST : 0,
-                details: logisticsDetails
-            };
-        }
-        
-        // Интерполяция значений для заданной площади
-        function interpolateValue(area, dataArray, valueKey) {
-            if (area <= dataArray[0].area) return dataArray[0][valueKey];
-            if (area >= dataArray[dataArray.length - 1].area) return dataArray[dataArray.length - 1][valueKey];
-            
-            for (let i = 0; i < dataArray.length - 1; i++) {
-                if (area >= dataArray[i].area && area <= dataArray[i + 1].area) {
-                    const t = (area - dataArray[i].area) / (dataArray[i + 1].area - dataArray[i].area);
-                    
-                    if (typeof dataArray[i][valueKey] === 'object') {
-                        // Для объектов (staff) интерполируем каждое свойство
-                        const result = {};
-                        for (const key in dataArray[i][valueKey]) {
-                            if (key === 'minHours' || key === 'maxHours') {
-                                // Для часов интерполируем линейно
-                                result[key] = dataArray[i][valueKey][key] + 
-                                             t * (dataArray[i + 1][valueKey][key] - dataArray[i][valueKey][key]);
-                            } else {
-                                // Для сотрудников округляем
-                                result[key] = Math.round(
-                                    dataArray[i][valueKey][key] + 
-                                    t * (dataArray[i + 1][valueKey][key] - dataArray[i][valueKey][key])
-                                );
-                            }
-                        }
-                        return result;
-                    } else {
-                        // Для чисел
-                        return dataArray[i][valueKey] + 
-                               t * (dataArray[i + 1][valueKey] - dataArray[i][valueKey]);
-                    }
-                }
-            }
-            
-            return dataArray[dataArray.length - 1][valueKey];
-        }
-        
-        // Функция определения экономически оправданного количества сотрудников
-        function getEconomicalStaff(cleaningType, area, totalManHours, additionalTimeHours, additionalCost, desiredTime, economyMode) {
-            const recommendations = economicalStaffRecommendations[cleaningType];
-            if (!recommendations) return { min: 1, max: 2, rec: 2 };
-            
-            const staffData = interpolateValue(area, recommendations, 'staff');
-            
-            // Если экономический режим выключен, возвращаем рекомендации как есть
-            if (!economyMode) {
-                return {
-                    min: Math.max(1, Math.round(staffData.min)),
-                    max: Math.max(1, Math.round(staffData.max)),
-                    rec: Math.max(1, Math.round(staffData.rec))
-                };
-            }
-            
-            // Экономический расчет: анализируем эффективность использования сотрудников
-            let recommendedStaff = Math.max(1, Math.round(staffData.rec));
-            
-            // Анализируем эффективность использования времени
-            const timeForOneStaff = totalManHours; // Время, если будет 1 сотрудник
-            const timeForRecommended = totalManHours / recommendedStaff; // Время на каждого при рекомендованном количестве
-            
-            // Критерии для экономического решения:
-            // 1. Если для одного сотрудника работа займет менее 8 часов И менее desiredTime
-            // 2. Если дополнительных услуг мало или нет
-            // 3. Если это небольшая площадь для поддерживающей уборки
-            
-            if (cleaningType === 'maintenance' && area < 200 && additionalTimeHours < 2) {
-                // Для поддерживающей уборки менее 200 м² с малым количеством допов - 1 сотрудник
-                if (timeForOneStaff <= 8 && timeForOneStaff <= desiredTime) {
-                    recommendedStaff = 1;
-                }
-            } else if (cleaningType === 'general_light' && area < 100 && additionalTimeHours < 3) {
-                // Для генеральной лайт менее 100 м² с малым количеством допов - проверяем
-                if (timeForOneStaff <= 8 && timeForOneStaff <= desiredTime) {
-                    recommendedStaff = 1;
-                } else if (timeForOneStaff <= 10 && additionalTimeHours < 1) {
-                    // Можно одного с небольшим переработом
-                    recommendedStaff = 1;
-                }
-            }
-            
-            // Проверяем, не слишком ли мало времени на каждого сотрудника
-            if (timeForRecommended < MIN_HOURS_FOR_EFFICIENCY && recommendedStaff > 1) {
-                // Слишком мало времени на каждого - возможно, стоит уменьшить количество сотрудников
-                const alternativeStaff = Math.max(1, recommendedStaff - 1);
-                const timeForAlternative = totalManHours / alternativeStaff;
-                
-                if (timeForAlternative <= 8 && timeForAlternative <= desiredTime) {
-                    recommendedStaff = alternativeStaff;
-                }
-            }
-            
-            // Учитываем желаемое время клиента
-            const staffByDesiredTime = Math.ceil(totalManHours / desiredTime);
-            if (staffByDesiredTime > recommendedStaff) {
-                // Клиент хочет быстрее, чем экономически оптимально
-                recommendedStaff = staffByDesiredTime;
-            }
-            
-            // Ограничиваем минимальным и максимальным
-            recommendedStaff = Math.max(staffData.min, Math.min(recommendedStaff, staffData.max));
-            
-            return {
-                min: Math.max(1, Math.round(staffData.min)),
-                max: Math.max(1, Math.round(staffData.max)),
-                rec: recommendedStaff,
-                minHours: staffData.minHours,
-                maxHours: staffData.maxHours
-            };
-        }
-        
-        // Функция определения сложности задачи
-        function getComplexity(totalHours, staff, cleaningType) {
-            const hoursPerWorker = totalHours / staff;
-            
-            if (hoursPerWorker < 4) return complexityLabels.low;
-            if (hoursPerWorker < 8) return complexityLabels.medium;
-            if (hoursPerWorker < 12) return complexityLabels.high;
-            return complexityLabels.veryHigh;
-        }
-        
         // Функция форматирования времени
         function formatTime(hours) {
             if (hours >= 1) {
@@ -1940,48 +2029,27 @@
             }
         }
         
-        // Функция форматирования человеко-часов
-        function formatManHours(hours) {
-            return `${hours.toFixed(1)} чел-ч`;
-        }
-        
         // Функция форматирования денег
         function formatMoney(amount) {
             return amount.toLocaleString('ru-RU') + ' руб.';
         }
         
-        // Исправленная функция для получения ценового коэффициента на основе коэффициента загрязнения
-        function getPriceMultiplierForPollution(pollutionLevel) {
-            const pollutionNum = parseFloat(pollutionLevel);
-            
-            // Используем сравнение с погрешностью для чисел с плавающей точкой
-            if (Math.abs(pollutionNum - 0.8) < 0.01) return 0.9;
-            if (Math.abs(pollutionNum - 1.0) < 0.01) return 1.0;
-            if (Math.abs(pollutionNum - 1.3) < 0.01) return 1.15;
-            if (Math.abs(pollutionNum - 2.2) < 0.01) return 2.2;
-            if (Math.abs(pollutionNum - 2.6) < 0.01) return 2.6;
-            return 1.0;
-        }
-        
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Расчет стоимости с учетом маржинальности, коэффициента загрязнения И КОЭФФИЦИЕНТА ОБЪЕКТА
-        function calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, cleaningType, area, additionalTimeHours, economyMode, pollutionLevel, discountPercent, logisticsCost, objectCoefficient) {
-            // Получаем базовую цену из таблицы
+        // Функция расчета стоимости с учетом маржинальности
+        function calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient) {
+            // Получаем базовую цену из таблицы (для клининга)
             const baseTablePrice = getPriceFromTable(cleaningType, area);
             
-            // Применяем коэффициент загрязнения к цене
-            let priceMultiplier = getPriceMultiplierForPollution(pollutionLevel);
-            
-            // ИСПРАВЛЕНО: Теперь применяем коэффициент объекта к цене
-            let mainCleaningPrice = Math.round(baseTablePrice * objectCoefficient * priceMultiplier);
+            // Применяем коэффициент объекта к цене
+            let mainCleaningPrice = Math.round(baseTablePrice * objectCoefficient);
             
             // Общая стоимость заказа до скидки
-            const orderTotalBeforeDiscount = mainCleaningPrice + additionalCost + logisticsCost.total;
+            const orderTotalBeforeDiscount = mainCleaningPrice + additionalCost + dryCleaningCost + logisticsCost.total;
             
             // Рассчитываем скидку
             const discountAmount = Math.round(orderTotalBeforeDiscount * (discountPercent / 100));
             const orderTotal = orderTotalBeforeDiscount - discountAmount;
             
-            // Стоимость сотрудников
+            // Стоимость сотрудников (только для клининга, химчистка - отдельная услуга)
             const staffCost = staffRequired * STAFF_COST_PER_SHIFT;
             
             // Маржинальность (относительно стоимости после скидки)
@@ -1992,21 +2060,8 @@
             // Обновляем элементы стоимости
             costStaffElement.textContent = `${staffRequired} чел.`;
             mainCleaningCostElement.textContent = `${formatMoney(mainCleaningPrice)}`;
-            
-            // Показываем базовую цену и коэффициент в скобках
-            if (priceMultiplier !== 1.0 || objectCoefficient !== 1.0) {
-                let multiplierText = '';
-                if (objectCoefficient !== 1.0 && priceMultiplier !== 1.0) {
-                    multiplierText = ` (базовая: ${formatMoney(baseTablePrice)} ×${objectCoefficient.toFixed(1)} ×${priceMultiplier.toFixed(2)})`;
-                } else if (objectCoefficient !== 1.0) {
-                    multiplierText = ` (базовая: ${formatMoney(baseTablePrice)} ×${objectCoefficient.toFixed(1)})`;
-                } else if (priceMultiplier !== 1.0) {
-                    multiplierText = ` (базовая: ${formatMoney(baseTablePrice)} ×${priceMultiplier.toFixed(2)})`;
-                }
-                mainCleaningCostElement.textContent += multiplierText;
-            }
-            
             additionalCostElement.textContent = formatMoney(additionalCost);
+            dryCleaningCostElement.textContent = formatMoney(dryCleaningCost);
             carCostElement.textContent = logisticsCost.car > 0 ? formatMoney(logisticsCost.car) : '0 руб.';
             equipmentCostElement.textContent = logisticsCost.equipment > 0 ? formatMoney(logisticsCost.equipment) : '0 руб.';
             totalOrderCostElement.textContent = formatMoney(orderTotalBeforeDiscount);
@@ -2015,6 +2070,10 @@
             staffCostElement.textContent = formatMoney(staffCost);
             profitLossElement.textContent = formatMoney(profit);
             marginPercentElement.textContent = `${marginPercent}%`;
+            
+            // Обновляем стоимость в результатах
+            mainCleaningCostResultElement.textContent = `${formatMoney(mainCleaningPrice)}`;
+            dryCleaningCostResultElement.textContent = `${formatMoney(dryCleaningCost)}`;
             
             // Цвет для маржинальности
             if (margin < 0) {
@@ -2027,9 +2086,6 @@
                 marginPercentElement.style.color = '#28a745';
                 profitLossElement.style.color = '#28a745';
             }
-            
-            // Обновляем стоимость основной уборки в результатах
-            mainCleaningCostResultElement.textContent = `${formatMoney(mainCleaningPrice)}`;
             
             // Показываем раздел стоимости
             costSection.style.display = 'block';
@@ -2080,7 +2136,7 @@
                                 <li>Уменьшить скидку</li>
                                 <li>Увеличить стоимость до ${formatMoney(staffCost * 1.1)}</li>
                                 <li>Уменьшить количество сотрудников до ${Math.max(1, Math.floor(orderTotal / STAFF_COST_PER_SHIFT))}</li>
-                                <li>Добавить дополнительные услуги</li>
+                                <li>Добавить дополнительные услуги или химчистку</li>
                             </ul>
                         </div>
                     `;
@@ -2101,222 +2157,59 @@
             }
             
             economyAnalysisElement.innerHTML = economyAnalysis;
-            
-            // Обновляем информацию о ценах из таблицы с учетом коэффициента загрязнения и объекта
-            updateTableInfo(area, cleaningType, baseTablePrice, mainCleaningPrice, orderTotalBeforeDiscount, priceMultiplier, objectCoefficient, discountPercent);
         }
         
-        // Обновление информации о ценах из таблицы с учетом коэффициента загрязнения И ОБЪЕКТА
-        function updateTableInfo(area, cleaningType, baseTablePrice, mainCleaningPrice, orderTotalBeforeDiscount, priceMultiplier, objectCoefficient, discountPercent) {
-            let cleaningTypeText = "";
+        // Получение цены из таблицы Excel для клининга
+        function getPriceFromTable(cleaningType, area) {
+            if (area <= 0) return 0;
+            
+            const roundedArea = Math.floor(area / 10) * 10;
+            let price = 0;
+            
             switch(cleaningType) {
-                case 'maintenance': cleaningTypeText = "Поддерживающая уборка"; break;
-                case 'general_light': cleaningTypeText = "Генеральная лайт"; break;
-                case 'general_full': cleaningTypeText = "Генеральная полная"; break;
-                case 'post_construction': cleaningTypeText = "После ремонта"; break;
-            }
-            
-            let tableInfo = `<i class="fas fa-info-circle"></i> <strong>Цены из прайс-листа:</strong><br>`;
-            tableInfo += `• Площадь: ${area} м²<br>`;
-            tableInfo += `• ${cleaningTypeText}: ${formatMoney(baseTablePrice)}<br>`;
-            
-            if (objectCoefficient !== 1.0) {
-                tableInfo += `• Коэффициент объекта: ×${objectCoefficient.toFixed(1)}<br>`;
-            }
-            
-            if (priceMultiplier !== 1.0) {
-                tableInfo += `• Коэффициент загрязнения: ×${priceMultiplier.toFixed(2)}<br>`;
-                tableInfo += `• Итоговая цена: ${formatMoney(mainCleaningPrice)}<br>`;
-            } else if (objectCoefficient !== 1.0) {
-                tableInfo += `• Итоговая цена: ${formatMoney(mainCleaningPrice)}<br>`;
-            }
-            
-            tableInfo += `• Стоимость 1 сотрудника: ${formatMoney(STAFF_COST_PER_SHIFT)}<br>`;
-            
-            if (discountPercent > 0) {
-                tableInfo += `• Скидка: ${discountPercent}%<br>`;
-            }
-            
-            tableInfo += `• Целевая маржинальность: ${MARGIN_TARGET*100}%`;
-            
-            tableInfoElement.innerHTML = tableInfo;
-        }
-        
-        // НОВАЯ ФУНКЦИЯ: Сброс всех параметров к исходным значениям
-        function resetCalculator() {
-            // Сброс основных параметров
-            objectTypeSelect.value = 'apartment';
-            areaInput.value = 100;
-            areaSlider.value = 100;
-            
-            // Сброс типа уборки к поддерживающей
-            document.querySelector('input[name="cleaningType"][value="maintenance"]').checked = true;
-            
-            // Обновление подсказки о времени
-            timeHint.textContent = "Для поддерживающей: 4-8 ч, для генеральной: 8-12 ч, после ремонта: 12-48 ч";
-            
-            pollutionLevelSelect.value = '1.0';
-            desiredTimeInput.value = 8;
-            
-            // Сброс выбора количества сотрудников
-            staffModeAuto.checked = true;
-            staffModeManual.checked = false;
-            manualStaffSelection.style.display = 'none';
-            autoStaffInfo.style.display = 'block';
-            manualStaffCount = 2;
-            staffCountDisplay.textContent = '2';
-            
-            // Сброс экономического режима
-            economyModeToggle.checked = true;
-            economyStatus.textContent = 'ВКЛ';
-            economyStatus.style.color = '#28a745';
-            economyStatus.style.fontWeight = 'bold';
-            
-            // Сброс скидки
-            discountInput.value = 0;
-            discountSlider.value = 0;
-            
-            // Сброс логистических услуг
-            carServiceCheckbox.checked = false;
-            equipmentDeliveryCheckbox.checked = false;
-            
-            // Сброс дополнительных услуг
-            additionalServices.forEach(service => {
-                const input = document.getElementById(`qty-${service.id}`);
-                if (input) {
-                    input.value = 0;
-                }
-                const totalElement = document.getElementById(`total-${service.id}`);
-                if (totalElement) {
-                    totalElement.textContent = '0 руб';
-                    totalElement.style.color = '#182848';
-                }
-            });
-            
-            // Обновление итога по дополнительным услугам
-            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги: 0 часов, 0 руб.`;
-            
-            // Скрытие подсказки об экономии
-            economyHint.style.display = 'none';
-            
-            // Сброс результатов
-            baseTimeElement.textContent = '-';
-            additionalTimeElement.textContent = '-';
-            totalTimeElement.textContent = '-';
-            staffRequiredElement.textContent = '-';
-            complexityLevelElement.textContent = '-';
-            complexityBadgeElement.textContent = '';
-            complexityBadgeElement.className = 'complexity-badge';
-            timePerWorkerElement.textContent = '-';
-            mainCleaningCostResultElement.textContent = '-';
-            
-            breakdownBaseElement.textContent = '-';
-            breakdownObjectElement.textContent = '-';
-            breakdownPollutionElement.textContent = '-';
-            breakdownAdditionalElement.textContent = '-';
-            
-            tableInfoElement.innerHTML = `<i class="fas fa-info-circle"></i> Заполните параметры и нажмите "Рассчитать"`;
-            recommendationMainElement.innerHTML = `<i class="fas fa-magic"></i> Заполните параметры и нажмите "Рассчитать"`;
-            
-            // Скрытие разделов с экономикой
-            costSection.style.display = 'none';
-            finalPriceSection.style.display = 'none';
-            
-            // Сброс плана работы
-            workPlanElement.innerHTML = `<p>После расчета появится подробный план работы для вашего объекта.</p>`;
-            additionalInfoElement.innerHTML = '';
-            
-            // Удаление предупреждения о минимальной площади, если оно есть
-            const areaWarning = document.getElementById('areaWarning');
-            if (areaWarning) {
-                areaWarning.remove();
-            }
-            
-            // Восстановление стандартных значений в результатах
-            costStaffElement.textContent = '-';
-            mainCleaningCostElement.textContent = '-';
-            additionalCostElement.textContent = '-';
-            carCostElement.textContent = '-';
-            equipmentCostElement.textContent = '-';
-            totalOrderCostElement.textContent = '-';
-            discountAmountElement.textContent = '-';
-            totalAfterDiscountElement.textContent = '-';
-            staffCostElement.textContent = '-';
-            profitLossElement.textContent = '-';
-            marginPercentElement.textContent = '-';
-            economyAnalysisElement.innerHTML = '';
-            finalPriceElement.innerHTML = '-';
-            
-            // Сброс рекомендации по персоналу
-            currentRecommendedStaff = 2;
-            recommendedStaffCount.textContent = '2';
-            if (window.updateStaffRecommendation) {
-                window.updateStaffRecommendation();
-            }
-            
-            // Показ сообщения о сбросе
-            showResetNotification();
-        }
-        
-        // НОВАЯ ФУНКЦИЯ: Показать уведомление о сбросе
-        function showResetNotification() {
-            // Создаем временное уведомление
-            const notification = document.createElement('div');
-            notification.id = 'resetNotification';
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                z-index: 1000;
-                display: flex;
-                align-items: center;
-                animation: slideIn 0.3s ease-out;
-            `;
-            
-            notification.innerHTML = `
-                <i class="fas fa-check-circle" style="margin-right: 10px; font-size: 1.2rem;"></i>
-                <span>Все параметры сброшены к исходным значениям</span>
-            `;
-            
-            // Добавляем стиль для анимации
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes fadeOut {
-                    from { opacity: 1; }
-                    to { opacity: 0; }
-                }
-            `;
-            document.head.appendChild(style);
-            
-            document.body.appendChild(notification);
-            
-            // Удаляем уведомление через 3 секунды
-            setTimeout(() => {
-                notification.style.animation = 'fadeOut 0.5s ease-out forwards';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
+                case 'maintenance':
+                    if (area <= 30) return 4290;
+                    if (area < 100) {
+                        const steps = Math.floor((area - 30) / 10);
+                        return 4290 + steps * 200;
+                    } else {
+                        const price90 = 4290 + 6 * 200;
+                        const steps = Math.floor((area - 90) / 10);
+                        return price90 + steps * 450;
                     }
-                }, 500);
-            }, 3000);
+                    
+                case 'general_light':
+                    if (area <= 30) return 5990;
+                    const stepsLight = Math.floor((area - 30) / 10);
+                    return 5990 + stepsLight * 1200;
+                    
+                case 'general_full':
+                    if (area <= 30) return 12490;
+                    if (area < 100) {
+                        const steps = Math.floor((area - 30) / 10);
+                        return 12490 + steps * 1500;
+                    } else {
+                        const price90 = 12490 + 6 * 1500;
+                        const steps = Math.floor((area - 90) / 10);
+                        return price90 + steps * 1000;
+                    }
+                    
+                case 'post_construction':
+                    if (area <= 30) return 13990;
+                    const stepsPost = Math.floor((area - 30) / 10);
+                    return 13990 + stepsPost * 1500;
+                    
+                default:
+                    return 0;
+            }
         }
         
-        // Основная функция расчета (без индикатора загрузки)
+        // Основная функция расчета
         function performCalculation() {
             // Получение значений из формы
             const area = parseFloat(areaInput.value);
             const objectType = objectTypeSelect.value;
             const pollutionLevel = parseFloat(pollutionLevelSelect.value);
-            const desiredTime = parseFloat(desiredTimeInput.value);
             const economyMode = economyModeToggle.checked;
             const discountPercent = parseFloat(discountInput.value);
             
@@ -2326,58 +2219,33 @@
             // Получаем коэффициент объекта
             const objectCoefficient = objectCoefficients[objectType] || 1.0;
             
-            // ДОБАВЛЕНО: Проверка минимальной площади для генеральной уборки
-            let calculatedArea = area;
-            if ((cleaningType === 'general_light' || cleaningType === 'general_full' || cleaningType === 'post_construction') && area < 30) {
-                calculatedArea = 30;
-                // Показываем предупреждение пользователю
-                const warningMessage = `Для генеральной уборки минимальная площадь составляет 30 м². Расчет будет произведен для 30 м².`;
-                console.warn(warningMessage);
-                // Можно добавить отображение предупреждения в интерфейсе
-                if (!document.getElementById('areaWarning')) {
-                    const warningDiv = document.createElement('div');
-                    warningDiv.id = 'areaWarning';
-                    warningDiv.className = 'economy-warning';
-                    warningDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${warningMessage}`;
-                    areaInput.parentNode.appendChild(warningDiv);
-                }
-            } else {
-                // Удаляем предупреждение если оно есть
-                const warningDiv = document.getElementById('areaWarning');
-                if (warningDiv) {
-                    warningDiv.remove();
-                }
-            }
-            
-            // Расчет времени и стоимости дополнительных услуг
+            // Расчет времени и стоимости дополнительных услуг клининга
             const additionalResult = updateServiceTotal();
             const additionalTimeHours = additionalResult.totalTime;
             const additionalCost = additionalResult.totalCost;
-            const hasExtras = additionalTimeHours > 0;
+            
+            // Расчет стоимости услуг химчистки
+            const dryCleaningResult = updateDryCleaningTotal();
+            const dryCleaningCost = dryCleaningResult.totalCost;
             
             // Получение стоимости логистических услуг
             const logisticsCost = getLogisticsCost();
             
             // Базовый расчет человеко-часов по нормативам
-            const norm = cleaningNorms[cleaningType];
-            const baseManHours = norm.avg * calculatedArea;
+            let baseManHours = 0;
+            if (area > 0) {
+                const norm = cleaningNorms[cleaningType];
+                baseManHours = norm.avg * area;
+            }
             
-            // Применение коэффициентов (коэффициент загрязнения теперь правильно применяется!)
+            // Применение коэффициентов
             const adjustedManHours = baseManHours * objectCoefficient * pollutionLevel;
             
             // Общее количество человеко-часов
             const totalManHours = adjustedManHours + additionalTimeHours;
             
             // Получение экономически оправданного количества сотрудников
-            const recommendedStaff = getEconomicalStaff(
-                cleaningType, 
-                calculatedArea, 
-                totalManHours, 
-                additionalTimeHours, 
-                additionalCost,
-                desiredTime,
-                economyMode
-            );
+            const recommendedStaff = getEconomicalStaff(cleaningType, area, totalManHours, additionalTimeHours, additionalCost, economyMode);
             
             // Сохраняем рекомендованное количество сотрудников
             currentRecommendedStaff = recommendedStaff.rec;
@@ -2385,114 +2253,69 @@
                 window.updateStaffRecommendation();
             }
             
-            // Расчет необходимого количества сотрудников по желаемому времени
-            const timeBasedStaff = Math.ceil(totalManHours / desiredTime);
-            
             // Итоговое количество сотрудников
             let staffRequired;
             if (staffModeManual.checked) {
-                // Если выбран ручной режим - используем выбранное пользователем количество
                 staffRequired = manualStaffCount;
             } else {
-                // Автоматический режим
-                staffRequired = Math.max(recommendedStaff.rec, timeBasedStaff);
-                
-                // Но не меньше минимального и не больше максимального
-                staffRequired = Math.max(recommendedStaff.min, Math.min(staffRequired, recommendedStaff.max));
+                staffRequired = recommendedStaff.rec;
             }
             
             // Время на одного сотрудника
-            const timePerWorker = totalManHours / staffRequired;
+            let timePerWorker = 0;
+            if (staffRequired > 0) {
+                timePerWorker = totalManHours / staffRequired;
+            }
             
             // Определение сложности задачи
             const complexity = getComplexity(totalManHours, staffRequired, cleaningType);
             
             // Обновление интерфейса с результатами
-            baseTimeElement.textContent = formatManHours(adjustedManHours);
-            additionalTimeElement.textContent = `${formatManHours(additionalTimeHours)} (${formatMoney(additionalCost)})`;
-            totalTimeElement.textContent = formatManHours(totalManHours);
+            baseTimeElement.textContent = `${adjustedManHours.toFixed(1)} чел-ч`;
+            additionalTimeElement.textContent = `${additionalTimeHours.toFixed(1)} чел-ч (${formatMoney(additionalCost)})`;
+            totalTimeElement.textContent = `${totalManHours.toFixed(1)} чел-ч`;
             staffRequiredElement.textContent = `${staffRequired} чел.`;
             complexityLevelElement.textContent = complexity.text;
             complexityBadgeElement.textContent = complexity.text;
             complexityBadgeElement.className = `complexity-badge ${complexity.badge}`;
             timePerWorkerElement.textContent = formatTime(timePerWorker);
             
-            // Детализация по времени
-            breakdownBaseElement.textContent = formatManHours(baseManHours);
-            breakdownObjectElement.textContent = `×${objectCoefficient.toFixed(1)}`;
-            breakdownPollutionElement.textContent = `×${pollutionLevel.toFixed(1)}`;
-            breakdownAdditionalElement.textContent = `${formatManHours(additionalTimeHours)} (${formatMoney(additionalCost)})`;
-            
-            // Формирование информации о расчете
-            let tableInfo = `<i class="fas fa-calculator"></i> <strong>Расчет по нормативам:</strong><br>`;
-            tableInfo += `• ${calculatedArea} м² × ${norm.avg.toFixed(2)} ч/ч на м² = ${baseManHours.toFixed(1)} чел-ч<br>`;
-            tableInfo += `• Коэффициент объекта: ${objectCoefficient.toFixed(1)}<br>`;
-            tableInfo += `• Коэффициент загрязнения: ${pollutionLevel.toFixed(1)}<br>`;
-            tableInfo += `• Итого: ${adjustedManHours.toFixed(1)} чел-ч<br>`;
-            
-            if (hasExtras) {
-                tableInfo += `• Доп. услуги: +${additionalTimeHours.toFixed(1)} чел-ч (${formatMoney(additionalCost)})<br>`;
-            }
-            
-            tableInfo += `• Всего: ${totalManHours.toFixed(1)} чел-ч`;
-            
-            tableInfoElement.innerHTML = tableInfo;
-            
             // Формирование рекомендаций
             let recommendationText = "";
             
-            if (staffRequired === 1) {
-                recommendationText = `<i class="fas fa-user-check"></i> Для уборки ${calculatedArea} м² ${staffModeManual.checked ? 'вы выбрали' : 'экономически выгодно использовать'} 1 сотрудника. Работа займет ${formatTime(timePerWorker)}.`;
+            if (area <= 0) {
+                recommendationText = `<i class="fas fa-home"></i> Площадь помещения: 0 м². Расчет выполнен только для дополнительных услуг.`;
+            } else if (staffRequired === 1) {
+                recommendationText = `<i class="fas fa-user-check"></i> Для уборки ${area} м² ${staffModeManual.checked ? 'вы выбрали' : 'экономически выгодно использовать'} 1 сотрудника. Работа займет ${formatTime(timePerWorker)}.`;
             } else {
-                recommendationText = `<i class="fas fa-users"></i> Для уборки ${calculatedArea} м² ${staffModeManual.checked ? 'вы выбрали' : 'рекомендуется'} бригада из ${staffRequired} сотрудников. Каждый отработает ${formatTime(timePerWorker)}.`;
+                recommendationText = `<i class="fas fa-users"></i> Для уборки ${area} м² ${staffModeManual.checked ? 'вы выбрали' : 'рекомендуется'} бригада из ${staffRequired} сотрудников. Каждый отработает ${formatTime(timePerWorker)}.`;
             }
             
-            // Особые примечания с учетом коэффициента загрязнения
-            if (pollutionLevel > 1.0) {
-                const priceMultiplier = getPriceMultiplierForPollution(pollutionLevel);
-                recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Внимание: повышенное загрязнение увеличивает время работы на ${((pollutionLevel - 1.0) * 100).toFixed(0)}% и стоимость заказа на ${((priceMultiplier - 1.0) * 100).toFixed(0)}%.</span>`;
-            } else if (pollutionLevel < 1.0) {
-                const priceMultiplier = getPriceMultiplierForPollution(pollutionLevel);
-                recommendationText += ` <span style="color: #28a745;"><i class="fas fa-check-circle"></i> Лёгкое загрязнение уменьшает время работы на ${((1.0 - pollutionLevel) * 100).toFixed(0)}% и стоимость заказа на ${((1.0 - priceMultiplier) * 100).toFixed(0)}%.</span>`;
-            }
-            
-            // Примечание о коэффициенте объекта
-            if (objectCoefficient !== 1.0) {
-                recommendationText += ` <span style="color: #17a2b8;"><i class="fas fa-building"></i> Коэффициент типа объекта: ×${objectCoefficient.toFixed(1)} (влияет на стоимость).</span>`;
-            }
-            
-            if (cleaningType === 'maintenance' && calculatedArea >= 200 && staffRequired < 2) {
-                recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Внимание: для поддерживающей уборки от 200 м² обычно требуется минимум 2 клинера для качества.</span>`;
-            }
-            
-            if (timePerWorker > 10) {
-                recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Внимание: продолжительность смены превышает 10 часов - рассмотрите вариант увеличения бригады.</span>`;
+            // Добавляем информацию о химчистке, если она выбрана
+            if (dryCleaningCost > 0) {
+                recommendationText += ` <span style="color: #9c27b0;"><i class="fas fa-tshirt"></i> В заказ включены услуги химчистки на сумму ${formatMoney(dryCleaningCost)}.</span>`;
+                
+                // Проверяем минимальный заказ химчистки
+                if (dryCleaningCost >= MIN_DRY_CLEANING_ORDER) {
+                    recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Внимание: минимальная сумма заказа химчистки составляет ${formatMoney(MIN_DRY_CLEANING_ORDER)}.</span>`;
+                }
             }
             
             if (discountPercent > 0) {
-                recommendationText += ` <span style="color: #17a2b8;"><i class="fas fa-tag"></i> Применена скидка: ${discountPercent}%.</span>`;
+                recommendationText += ` <span style="color: #17a2b8;"><i class="fas fa-tag"></i> Применена общая скидка: ${discountPercent}%.</span>`;
             }
             
             if (logisticsCost.total > 0) {
                 recommendationText += ` <span style="color: #ffc107;"><i class="fas fa-truck"></i> Включены логистические услуги: ${formatMoney(logisticsCost.total)}.</span>`;
             }
             
-            // Предупреждение, если выбран ручной режим и количество сотрудников отличается от рекомендованного
-            if (staffModeManual.checked) {
-                if (manualStaffCount < currentRecommendedStaff) {
-                    recommendationText += ` <span style="color: #d9534f;"><i class="fas fa-exclamation-triangle"></i> Вы выбрали меньше сотрудников, чем рекомендовано (${currentRecommendedStaff}). Работа займет больше времени.</span>`;
-                } else if (manualStaffCount > currentRecommendedStaff) {
-                    recommendationText += ` <span style="color: #28a745;"><i class="fas fa-check-circle"></i> Вы выбрали больше сотрудников, чем рекомендовано (${currentRecommendedStaff}). Работа будет выполнена быстрее.</span>`;
-                }
-            }
-            
             recommendationMainElement.innerHTML = recommendationText;
             
-            // ИСПРАВЛЕНО: Передаем objectCoefficient в calculateCost
-            calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, cleaningType, calculatedArea, additionalTimeHours, economyMode, pollutionLevel, discountPercent, logisticsCost, objectCoefficient);
+            // Расчет стоимости с учетом маржинальности
+            calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient);
             
-            // Формирование плана работы с передачей pollutionLevel и objectCoefficient
-            generateWorkPlan(calculatedArea, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, pollutionLevel, objectCoefficient, economyMode, discountPercent, logisticsCost);
+            // Формирование плана работы
+            generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, dryCleaningCost, economyMode, discountPercent, logisticsCost);
             
             // Дополнительная информация
             additionalInfoElement.innerHTML = `<i class="fas fa-info-circle"></i> <strong>${complexity.desc}</strong> ${timePerWorker > 8 ? "Рекомендуется разбить работу на несколько дней или увеличить бригаду." : ""}`;
@@ -2501,65 +2324,81 @@
             recommendationCardElement.style.display = 'block';
         }
         
-        // Функция генерации плана работы с учетом загрязнения и коэффициента объекта
-        function generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, pollutionLevel, objectCoefficient, economyMode, discountPercent, logisticsCost) {
+        // Функция получения экономически оправданного количества сотрудников
+        function getEconomicalStaff(cleaningType, area, totalManHours, additionalTimeHours, additionalCost, economyMode) {
+            // Если площадь 0, то используем только totalManHours (который равен additionalTimeHours)
+            if (area <= 0) {
+                if (totalManHours <= 0) {
+                    return { min: 0, max: 0, rec: 0 };
+                }
+                let rec = Math.ceil(totalManHours / 8);
+                if (rec < 1) rec = 1;
+                return { min: rec, max: rec, rec: rec };
+            }
+            
+            const recommendations = economicalStaffRecommendations[cleaningType];
+            if (!recommendations) return { min: 1, max: 2, rec: 2 };
+            
+            // Упрощенная логика определения рекомендаций
+            let recommendedStaff = 2;
+            
+            if (area < 100) {
+                recommendedStaff = cleaningType === 'maintenance' ? 1 : 2;
+            } else if (area < 200) {
+                recommendedStaff = cleaningType === 'maintenance' ? 2 : 2;
+            } else if (area < 400) {
+                recommendedStaff = cleaningType === 'maintenance' ? 2 : 3;
+            } else {
+                recommendedStaff = cleaningType === 'maintenance' ? 3 : 4;
+            }
+            
+            // Для уборки после ремонта всегда больше сотрудников
+            if (cleaningType === 'post_construction') {
+                recommendedStaff = Math.max(recommendedStaff, 3);
+            }
+            
+            // Экономический режим может уменьшить количество сотрудников
+            if (economyMode && cleaningType === 'maintenance' && area < 150 && additionalTimeHours < 2) {
+                recommendedStaff = 1;
+            }
+            
+            return {
+                min: Math.max(1, recommendedStaff - 1),
+                max: recommendedStaff + 1,
+                rec: recommendedStaff
+            };
+        }
+        
+        // Функция определения сложности задачи
+        function getComplexity(totalHours, staff, cleaningType) {
+            if (staff === 0 || totalHours === 0) return complexityLabels.low;
+            
+            const hoursPerWorker = totalHours / staff;
+            
+            if (hoursPerWorker < 4) return complexityLabels.low;
+            if (hoursPerWorker < 8) return complexityLabels.medium;
+            if (hoursPerWorker < 12) return complexityLabels.high;
+            return complexityLabels.veryHigh;
+        }
+        
+        // Функция генерации плана работы
+        function generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, dryCleaningCost, economyMode, discountPercent, logisticsCost) {
             let planHTML = '<div class="work-plan">';
             
             // Определение типа уборки для отображения
             let cleaningTypeText = "";
             switch(cleaningType) {
-                case 'maintenance': 
-                    cleaningTypeText = "поддерживающей уборки";
-                    break;
-                case 'general_light': 
-                    cleaningTypeText = "генеральной уборки лайт";
-                    break;
-                case 'general_full': 
-                    cleaningTypeText = "генеральной уборки (полной)";
-                    break;
-                case 'post_construction': 
-                    cleaningTypeText = "уборки после ремонта";
-                    break;
+                case 'maintenance': cleaningTypeText = "поддерживающей уборки"; break;
+                case 'general_light': cleaningTypeText = "генеральной уборки лайт"; break;
+                case 'general_full': cleaningTypeText = "генеральной уборки (полной)"; break;
+                case 'post_construction': cleaningTypeText = "уборки после ремонта"; break;
             }
             
-            // Определение типа объекта для отображения
-            let objectTypeText = "";
-            switch(objectType) {
-                case 'apartment': objectTypeText = "квартиры"; break;
-                case 'house': objectTypeText = "дома/коттеджа"; break;
-                case 'office': objectTypeText = "офиса"; break;
-                case 'commercial': objectTypeText = "коммерческого помещения"; break;
-                case 'restaurant': objectTypeText = "ресторана/кафе"; break;
-            }
-            
-            planHTML += `<p><strong>План для ${cleaningTypeText} ${objectTypeText} площадью ${area} м²:</strong></p>`;
-            
-            // Информация о коэффициенте загрязнения
-            const priceMultiplier = getPriceMultiplierForPollution(pollutionLevel);
-            const pollutionNum = parseFloat(pollutionLevel);
-            
-            // Информация о коэффициенте объекта
-            planHTML += `<div class="${pollutionLevel > 1.0 ? 'economy-warning' : pollutionLevel < 1.0 ? 'economy-ok' : 'info-text'}">`;
-            planHTML += `<i class="fas fa-tint"></i> Коэффициент загрязнения: ×${pollutionLevel.toFixed(1)}<br>`;
-            planHTML += `<i class="fas fa-building"></i> Коэффициент объекта: ×${objectCoefficient.toFixed(1)}<br>`;
-            planHTML += `<i class="fas fa-money-bill-wave"></i> Ценовой коэффициент: ×${priceMultiplier.toFixed(2)}<br>`;
-            
-            // Используем сравнение с погрешностью для чисел с плавающей точкой
-            if (Math.abs(pollutionNum - 0.8) < 0.01) {
-                planHTML += `<i class="fas fa-thumbs-up"></i> Лёгкое загрязнение - работа выполняется быстрее на 20% (цена -10%)`;
-            } else if (Math.abs(pollutionNum - 1.0) < 0.01) {
-                planHTML += `<i class="fas fa-balance-scale"></i> Среднее загрязнение - стандартное время работы и цена`;
-            } else if (Math.abs(pollutionNum - 1.3) < 0.01) {
-                planHTML += `<i class="fas fa-exclamation-triangle"></i> Сильное загрязнение - требуется дополнительное время на сложные участки (+30% времени, цена +15%)`;
-            } else if (Math.abs(pollutionNum - 2.2) < 0.01) {
-                planHTML += `<i class="fas fa-skull-crossbones"></i> Очень сильное загрязнение - необходима предварительная обработка сложных зон (+120% времени, цена умножается на 2.2)`;
-            } else if (Math.abs(pollutionNum - 2.6) < 0.01) {
-                planHTML += `<i class="fas fa-hard-hat"></i> Загрязнение после стройки/ремонта - требуется специализированная обработка (в 2.6 раза дольше, цена умножается на 2.6)`;
+            if (area > 0) {
+                planHTML += `<p><strong>План для ${cleaningTypeText} площадью ${area} м²:</strong></p>`;
             } else {
-                planHTML += `<i class="fas fa-info-circle"></i> Коэффициент загрязнения: ×${pollutionLevel.toFixed(1)}`;
+                planHTML += `<p><strong>План для дополнительных услуг:</strong></p>`;
             }
-            
-            planHTML += `</div>`;
             
             // Информация о режиме выбора персонала
             if (staffModeManual.checked) {
@@ -2572,21 +2411,22 @@
                 planHTML += `</div>`;
             }
             
-            // Особые примечания
-            if (cleaningType === 'maintenance' && area >= 200 && staffRequired < 2 && economyMode) {
-                planHTML += `<div class="economy-warning"><i class="fas fa-exclamation-triangle"></i> Экономический режим: для поддерживающей уборки от 200 м² обычно требуется 2 клинера, но выбран 1 для экономии</div>`;
+            // Информация о химчистке
+            if (dryCleaningCost > 0) {
+                planHTML += `<div class="info-text">`;
+                planHTML += `<i class="fas fa-tshirt"></i> <strong>Услуги химчистки включены в заказ:</strong> ${formatMoney(dryCleaningCost)}`;
+                planHTML += `</div>`;
             }
             
-            if (cleaningType === 'post_construction') {
-                planHTML += `<div class="efficiency-warning"><i class="fas fa-tools"></i> Для уборки после ремонта рекомендуется использовать промышленные пылесосы и спецоборудование</div>`;
-            }
-            
-            // Рекомендации по распределению обязанностей с учетом загрязнения
-            if (pollutionLevel >= 2.2) {
-                planHTML += `<div class="efficiency-warning"><i class="fas fa-user-md"></i> При высоком уровне загрязнения рекомендуется выделить отдельного сотрудника для предварительной обработки сложных зон</div>`;
-            }
-            
-            if (staffRequired === 1) {
+            // Рекомендации по распределению обязанностей
+            if (staffRequired === 0) {
+                planHTML += `
+                    <div class="work-plan-item">
+                        <div class="work-plan-badge">!</div>
+                        <div><i class="fas fa-info-circle"></i> Сотрудники не требуются (только дополнительные услуги или химчистка)</div>
+                    </div>
+                `;
+            } else if (staffRequired === 1) {
                 planHTML += `
                     <div class="work-plan-item">
                         <div class="work-plan-badge">1</div>
@@ -2594,30 +2434,17 @@
                     </div>
                 `;
             } else if (staffRequired === 2) {
-                if (pollutionLevel >= 2.2) {
-                    planHTML += `
-                        <div class="work-plan-item">
-                            <div class="work-plan-badge">1</div>
-                            <div><i class="fas fa-spray-can"></i> Предварительная обработка сложных зон (жир, въевшиеся загрязнения)</div>
-                        </div>
-                        <div class="work-plan-item">
-                            <div class="work-plan-badge">2</div>
-                            <div><i class="fas fa-broom"></i> Основная уборка, мойка сантехники и кухни</div>
-                        </div>
-                    `;
-                } else {
-                    planHTML += `
-                        <div class="work-plan-item">
-                            <div class="work-plan-badge">1</div>
-                            <div><i class="fas fa-tint"></i> Влажная уборка, мойка сантехники и кухни</div>
-                        </div>
-                        <div class="work-plan-item">
-                            <div class="work-plan-badge">2</div>
-                            <div><i class="fas fa-wind"></i> Сухая уборка, обеспыливание, дополнительные услуги</div>
-                        </div>
-                    `;
-                }
-            } else if (staffRequired === 3) {
+                planHTML += `
+                    <div class="work-plan-item">
+                        <div class="work-plan-badge">1</div>
+                        <div><i class="fas fa-tint"></i> Влажная уборка, мойка сантехники и кухни</div>
+                    </div>
+                    <div class="work-plan-item">
+                        <div class="work-plan-badge">2</div>
+                        <div><i class="fas fa-wind"></i> Сухая уборка, обеспыливание, дополнительные услуги</div>
+                    </div>
+                `;
+            } else if (staffRequired >= 3) {
                 planHTML += `
                     <div class="work-plan-item">
                         <div class="work-plan-badge">1</div>
@@ -2632,94 +2459,36 @@
                         <div><i class="fas fa-wind"></i> Сухая уборка, пылесос, вынос мусора</div>
                     </div>
                 `;
-            } else if (staffRequired >= 4) {
-                planHTML += `
-                    <div class="work-plan-item">
-                        <div class="work-plan-badge">1-2</div>
-                        <div><i class="fas fa-users"></i> 2 сотрудника - влажная уборка полов и поверхностей</div>
-                    </div>
-                    <div class="work-plan-item">
-                        <div class="work-plan-badge">3</div>
-                        <div><i class="fas fa-shower"></i> Сантехника, кухня и окна</div>
-                    </div>
-                    <div class="work-plan-item">
-                        <div class="work-plan-badge">4</div>
-                        <div><i class="fas fa-wind"></i> Сухая уборка и дополнительные услуги</div>
-                    </div>
-                `;
-                
-                if (staffRequired >= 5) {
-                    planHTML += `
-                        <div class="work-plan-item">
-                            <div class="work-plan-badge">5+</div>
-                            <div><i class="fas fa-tasks"></i> Остальные распределяются по зонам для ускорения работы</div>
-                        </div>
-                    `;
-                }
             }
             
-            // Информация о времени и экономике
+            // Экономическая информация
             planHTML += `<div style="margin-top: 15px; padding-top: 10px; border-top: 2px dashed #ddd;">`;
-            planHTML += `<strong><i class="fas fa-clock"></i> Общее время:</strong> ${formatTime(totalManHours)} (${totalManHours.toFixed(1)} чел-ч)<br>`;
-            planHTML += `<strong><i class="fas fa-user-clock"></i> На 1 сотрудника:</strong> ${formatTime(timePerWorker)}<br>`;
-            planHTML += `<strong><i class="fas fa-tint"></i> Коэффициент загрязнения:</strong> ×${pollutionLevel.toFixed(1)}<br>`;
-            planHTML += `<strong><i class="fas fa-building"></i> Коэффициент объекта:</strong> ×${objectCoefficient.toFixed(1)}<br>`;
             
-            // Добавляем экономическую информацию
-            const baseTablePrice = getPriceFromTable(cleaningType, area);
-            const priceMultiplierForCost = getPriceMultiplierForPollution(pollutionLevel);
-            const mainCleaningPrice = Math.round(baseTablePrice * objectCoefficient * priceMultiplierForCost);
-            const orderTotalBeforeDiscount = mainCleaningPrice + additionalCost + logisticsCost.total;
-            const discountAmount = Math.round(orderTotalBeforeDiscount * (discountPercent / 100));
-            const orderTotal = orderTotalBeforeDiscount - discountAmount;
-            const staffCost = staffRequired * STAFF_COST_PER_SHIFT;
-            const profit = orderTotal - staffCost;
-            const margin = orderTotal > 0 ? (profit / orderTotal * 100).toFixed(1) : 0;
-            
-            planHTML += `<strong><i class="fas fa-money-bill-wave"></i> Базовая цена:</strong> ${formatMoney(baseTablePrice)}<br>`;
-            planHTML += `<strong><i class="fas fa-money-bill-wave"></i> Стоимость основной уборки:</strong> ${formatMoney(mainCleaningPrice)}<br>`;
-            planHTML += `<strong><i class="fas fa-money-bill-wave"></i> Дополнительные услуги:</strong> ${formatMoney(additionalCost)}<br>`;
-            
-            if (logisticsCost.car > 0) {
-                planHTML += `<strong><i class="fas fa-car"></i> Выезд автомобиля:</strong> ${formatMoney(logisticsCost.car)}<br>`;
+            if (area > 0) {
+                planHTML += `<strong><i class="fas fa-vector-square"></i> Площадь уборки:</strong> ${area} м²<br>`;
+                planHTML += `<strong><i class="fas fa-clock"></i> Общее время:</strong> ${formatTime(totalManHours)} (${totalManHours.toFixed(1)} чел-ч)<br>`;
+                planHTML += `<strong><i class="fas fa-user-clock"></i> На 1 сотрудника:</strong> ${formatTime(timePerWorker)}<br>`;
+                planHTML += `<strong><i class="fas fa-money-bill-wave"></i> Стоимость уборки:</strong> ${mainCleaningCostResultElement.textContent}<br>`;
             }
             
-            if (logisticsCost.equipment > 0) {
-                planHTML += `<strong><i class="fas fa-tools"></i> Доставка оборудования:</strong> ${formatMoney(logisticsCost.equipment)}<br>`;
+            if (additionalCost > 0) {
+                planHTML += `<strong><i class="fas fa-plus-circle"></i> Доп. услуги клининга:</strong> ${formatMoney(additionalCost)}<br>`;
+            }
+            
+            if (dryCleaningCost > 0) {
+                planHTML += `<strong><i class="fas fa-tshirt"></i> Услуги химчистки:</strong> ${formatMoney(dryCleaningCost)}<br>`;
+            }
+            
+            if (logisticsCost.total > 0) {
+                planHTML += `<strong><i class="fas fa-truck"></i> Логистика:</strong> ${formatMoney(logisticsCost.total)}<br>`;
             }
             
             if (discountPercent > 0) {
-                planHTML += `<strong><i class="fas fa-tag"></i> Скидка (${discountPercent}%):</strong> -${formatMoney(discountAmount)}<br>`;
+                planHTML += `<strong><i class="fas fa-tag"></i> Скидка:</strong> ${discountPercent}%<br>`;
             }
             
-            planHTML += `<strong><i class="fas fa-receipt"></i> Итоговая стоимость:</strong> ${formatMoney(orderTotal)}<br>`;
-            planHTML += `<strong><i class="fas fa-users"></i> Стоимость сотрудников:</strong> ${formatMoney(staffCost)}<br>`;
-            planHTML += `<strong><i class="fas fa-chart-line"></i> Прибыль:</strong> ${formatMoney(profit)}<br>`;
-            planHTML += `<strong><i class="fas fa-percentage"></i> Маржинальность:</strong> ${margin}%`;
-            
-            if (timePerWorker > 8) {
-                planHTML += `<div class="efficiency-warning" style="margin-top: 10px;"><i class="fas fa-exclamation-triangle"></i> Рекомендуется разбить работу на ${Math.ceil(timePerWorker / 8)} дня или увеличить бригаду до ${Math.ceil(staffRequired * 1.5)} человек</div>`;
-            }
-            
-            if (economyMode && staffRequired === 1 && timePerWorker < 4) {
-                planHTML += `<div class="economy-option" style="margin-top: 10px;">
-                    <i class="fas fa-lightbulb"></i> <strong>Экономическая рекомендация:</strong> Рассмотрите добавление дополнительных услуг для более эффективного использования рабочего времени.
-                    При добавлении услуг на сумму от ${formatMoney(4000 - (STAFF_COST_PER_SHIFT / timePerWorker * 4))} второй сотрудник может стать экономически оправданным.
-                </div>`;
-            }
-            
-            // Рекомендация по изменению количества сотрудников в ручном режиме
-            if (staffModeManual.checked) {
-                if (manualStaffCount < currentRecommendedStaff) {
-                    planHTML += `<div class="economy-warning" style="margin-top: 10px;">
-                        <i class="fas fa-exclamation-triangle"></i> <strong>Рекомендация:</strong> Увеличение количества сотрудников до ${currentRecommendedStaff} сократит время работы на ${formatTime(timePerWorker - (totalManHours / currentRecommendedStaff))} на каждого сотрудника.
-                    </div>`;
-                } else if (manualStaffCount > currentRecommendedStaff) {
-                    planHTML += `<div class="economy-ok" style="margin-top: 10px;">
-                        <i class="fas fa-check-circle"></i> <strong>Преимущество:</strong> Большее количество сотрудников сократит общее время выполнения работы.
-                    </div>`;
-                }
-            }
+            planHTML += `<strong><i class="fas fa-receipt"></i> Итоговая стоимость:</strong> ${finalPriceElement.textContent}<br>`;
+            planHTML += `<strong><i class="fas fa-chart-line"></i> Маржинальность:</strong> ${marginPercentElement.textContent}`;
             
             planHTML += `</div>`;
             planHTML += '</div>';
@@ -2727,66 +2496,102 @@
             workPlanElement.innerHTML = planHTML;
         }
         
-        // Синхронизация поля ввода и слайдера для площади
-        areaInput.addEventListener('input', function() {
-            areaSlider.value = this.value;
-        });
-        
-        areaSlider.addEventListener('input', function() {
-            areaInput.value = this.value;
-        });
-        
-        // Синхронизация поля ввода и слайдера для скидки
-        discountInput.addEventListener('input', function() {
-            discountSlider.value = this.value;
-            scheduleCalculation();
-        });
-        
-        discountSlider.addEventListener('input', function() {
-            discountInput.value = this.value;
-            scheduleCalculation();
-        });
-        
-        // Обработчик изменения экономического режима
-        economyModeToggle.addEventListener('change', function() {
-            economyStatus.textContent = this.checked ? 'ВКЛ' : 'ВЫКЛ';
-            economyStatus.style.color = this.checked ? '#28a745' : '#dc3545';
-            economyStatus.style.fontWeight = 'bold';
-        });
-        
-        // Обработчик изменения типа уборки для установки времени по умолчанию
-        document.querySelectorAll('input[name="cleaningType"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const cleaningType = this.value;
-                let defaultTime = 8;
-                let hintText = "";
-                
-                if (cleaningType === 'maintenance') {
-                    defaultTime = 6;
-                    hintText = "Для поддерживающей: 4-8 ч";
-                } else if (cleaningType === 'general_light') {
-                    defaultTime = 8;
-                    hintText = "Для генеральной лайт: 6-10 ч";
-                } else if (cleaningType === 'general_full') {
-                    defaultTime = 10;
-                    hintText = "Для генеральной полной: 8-12 ч";
-                } else if (cleaningType === 'post_construction') {
-                    defaultTime = 12;
-                    hintText = "Для уборки после ремонта: 12-48 ч";
+        // Сброс всех параметров к исходным значениям
+        function resetCalculator() {
+            // Сброс основных параметров
+            objectTypeSelect.value = 'apartment';
+            areaInput.value = 100;
+            areaSlider.value = 100;
+            
+            // Сброс типа уборки к поддерживающей
+            document.querySelector('input[name="cleaningType"][value="maintenance"]').checked = true;
+            
+            pollutionLevelSelect.value = '1.0';
+            
+            // Сброс выбора количества сотрудников
+            staffModeAuto.checked = true;
+            staffModeManual.checked = false;
+            manualStaffSelection.style.display = 'none';
+            autoStaffInfo.style.display = 'block';
+            manualStaffCount = 2;
+            staffCountDisplay.textContent = '2';
+            
+            // Сброс экономического режима
+            economyModeToggle.checked = true;
+            economyStatus.textContent = 'ВКЛ';
+            economyStatus.style.color = '#28a745';
+            
+            // Сброс скидки
+            discountInput.value = 0;
+            discountSlider.value = 0;
+            
+            // Сброс логистических услуг
+            carServiceCheckbox.checked = false;
+            equipmentDeliveryCheckbox.checked = false;
+            
+            // Сброс дополнительных услуг клининга
+            additionalServices.forEach(service => {
+                const input = document.getElementById(`qty-${service.id}`);
+                if (input) input.value = 0;
+                const totalElement = document.getElementById(`total-${service.id}`);
+                if (totalElement) {
+                    totalElement.textContent = '0 руб';
+                    totalElement.style.color = '#182848';
                 }
-                
-                desiredTimeInput.value = defaultTime;
-                timeHint.textContent = hintText;
             });
-        });
-        
-        // НОВЫЙ ОБРАБОТЧИК: Кнопка сброса
-        resetBtn.addEventListener('click', function() {
-            resetCalculator();
-        });
+            
+            // Сброс услуг химчистки
+            dryCleaningServices.forEach(category => {
+                category.items.forEach(item => {
+                    const input = document.getElementById(`qty-dry-${item.id}`);
+                    if (input) input.value = 0;
+                    const totalElement = document.getElementById(`total-dry-${item.id}`);
+                    if (totalElement) {
+                        totalElement.textContent = '0 руб';
+                        totalElement.style.color = '#182848';
+                    }
+                });
+            });
+            
+            // Обновление итогов
+            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги клининга: 0 часов, 0 руб.`;
+            dryCleaningTotal.innerHTML = `<i class="fas fa-receipt"></i> Услуги химчистки: 0 руб.`;
+            
+            // Сброс результатов
+            baseTimeElement.textContent = '-';
+            additionalTimeElement.textContent = '-';
+            dryCleaningCostResultElement.textContent = '-';
+            totalTimeElement.textContent = '-';
+            staffRequiredElement.textContent = '-';
+            complexityLevelElement.textContent = '-';
+            complexityBadgeElement.textContent = '';
+            complexityBadgeElement.className = 'complexity-badge';
+            timePerWorkerElement.textContent = '-';
+            mainCleaningCostResultElement.textContent = '-';
+            
+            recommendationMainElement.innerHTML = `<i class="fas fa-magic"></i> Заполните параметры и нажмите "Рассчитать"`;
+            
+            // Скрытие разделов с экономикой
+            costSection.style.display = 'none';
+            finalPriceSection.style.display = 'none';
+            
+            // Сброс плана работы
+            workPlanElement.innerHTML = `<p>После расчета появится подробный план работы для вашего объекта.</p>`;
+            additionalInfoElement.innerHTML = '';
+            
+            // Сброс рекомендации по персоналу
+            currentRecommendedStaff = 2;
+            recommendedStaffCount.textContent = '2';
+            if (window.updateStaffRecommendation) {
+                window.updateStaffRecommendation();
+            }
+            
+            // Выполняем расчет для обновления интерфейса
+            performCalculation();
+        }
         
         // Основная функция расчета с индикатором загрузки
-        function calculateStaff() {
+        function calculateFull() {
             loadingIndicator.style.display = 'block';
             calculateBtn.disabled = true;
             calculateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Расчет...';
@@ -2795,7 +2600,7 @@
                 performCalculation();
                 loadingIndicator.style.display = 'none';
                 calculateBtn.disabled = false;
-                calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> Рассчитать персонал и стоимость';
+                calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> Рассчитать полную стоимость';
             }, 500);
         }
         
@@ -2809,53 +2614,11 @@
             }, 300);
         }
         
-        // Добавляем обработчики для автоматического пересчета
-        areaInput.addEventListener('input', scheduleCalculation);
-        areaSlider.addEventListener('input', scheduleCalculation);
-        objectTypeSelect.addEventListener('change', scheduleCalculation);
-        pollutionLevelSelect.addEventListener('change', scheduleCalculation);
-        desiredTimeInput.addEventListener('change', scheduleCalculation);
-        economyModeToggle.addEventListener('change', scheduleCalculation);
-        carServiceCheckbox.addEventListener('change', scheduleCalculation);
-        equipmentDeliveryCheckbox.addEventListener('change', scheduleCalculation);
-        
-        // Обработчики для выбора количества сотрудников
-        staffModeAuto.addEventListener('change', scheduleCalculation);
-        staffModeManual.addEventListener('change', scheduleCalculation);
-        
-        document.querySelectorAll('input[name="cleaningType"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const cleaningType = this.value;
-                let defaultTime = 8;
-                let hintText = "";
-                
-                if (cleaningType === 'maintenance') {
-                    defaultTime = 6;
-                    hintText = "Для поддерживающей: 4-8 ч";
-                } else if (cleaningType === 'general_light') {
-                    defaultTime = 8;
-                    hintText = "Для генеральной лайт: 6-10 ч";
-                } else if (cleaningType === 'general_full') {
-                    defaultTime = 10;
-                    hintText = "Для генеральной полной: 8-12 ч";
-                } else if (cleaningType === 'post_construction') {
-                    defaultTime = 12;
-                    hintText = "Для уборки после ремонта: 12-48 ч";
-                }
-                
-                desiredTimeInput.value = defaultTime;
-                timeHint.textContent = hintText;
-                scheduleCalculation();
-            });
-        });
-        
-        // Обработчик нажатия кнопки расчета
-        calculateBtn.addEventListener('click', calculateStaff);
-        
         // Инициализация при загрузке страницы
         window.addEventListener('DOMContentLoaded', function() {
-            // Генерация списка услуг
+            // Генерация списков услуг
             generateServicesList();
+            generateDryCleaningList();
             
             // Инициализация выбора количества сотрудников
             initStaffSelection();
@@ -2867,8 +2630,48 @@
             economyStatus.style.color = '#28a745';
             economyStatus.style.fontWeight = 'bold';
             
+            // Обработчики событий
+            areaInput.addEventListener('input', function() {
+                areaSlider.value = this.value;
+                scheduleCalculation();
+            });
+            
+            areaSlider.addEventListener('input', function() {
+                areaInput.value = this.value;
+                scheduleCalculation();
+            });
+            
+            discountInput.addEventListener('input', function() {
+                discountSlider.value = this.value;
+                scheduleCalculation();
+            });
+            
+            discountSlider.addEventListener('input', function() {
+                discountInput.value = this.value;
+                scheduleCalculation();
+            });
+            
+            economyModeToggle.addEventListener('change', function() {
+                economyStatus.textContent = this.checked ? 'ВКЛ' : 'ВЫКЛ';
+                economyStatus.style.color = this.checked ? '#28a745' : '#dc3545';
+                scheduleCalculation();
+            });
+            
+            objectTypeSelect.addEventListener('change', scheduleCalculation);
+            pollutionLevelSelect.addEventListener('change', scheduleCalculation);
+            carServiceCheckbox.addEventListener('change', scheduleCalculation);
+            equipmentDeliveryCheckbox.addEventListener('change', scheduleCalculation);
+            
+            document.querySelectorAll('input[name="cleaningType"]').forEach(radio => {
+                radio.addEventListener('change', scheduleCalculation);
+            });
+            
+            // Обработчики для кнопок
+            calculateBtn.addEventListener('click', calculateFull);
+            resetBtn.addEventListener('click', resetCalculator);
+            
             // Выполним расчет при загрузке
-            calculateStaff();
+            calculateFull();
         });
     </script>
 </body>
