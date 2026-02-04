@@ -1491,6 +1491,15 @@
             restaurant: 1.3     // Ресторан (жир, кухня)
         };
         
+        // Коэффициенты для степени загрязнения (исправленные)
+        const pollutionCoefficients = {
+            0.8: { name: "Легкая", multiplier: 0.8, color: "pollution-low" },
+            1.0: { name: "Средняя", multiplier: 1.0, color: "pollution-medium" },
+            1.3: { name: "Сильная", multiplier: 1.3, color: "pollution-high" },
+            2.2: { name: "Очень сильная", multiplier: 2.2, color: "pollution-very-high" },
+            2.6: { name: "После стройки/ремонта", multiplier: 2.6, color: "pollution-extreme" }
+        };
+        
         // Дополнительные услуги клининга
         const additionalServices = [
             { id: 'ironing', name: 'Глажка', time: 0.5, price: 400, unit: '30 мин', type: 'number', icon: 'fas fa-tshirt' },
@@ -1744,6 +1753,30 @@
         let currentRecommendedStaff = 2;
         let manualStaffCount = 2;
         
+        // Функция форматирования времени
+        function formatTime(hours) {
+            if (hours >= 1) {
+                const wholeHours = Math.floor(hours);
+                const minutes = Math.round((hours - wholeHours) * 60);
+                
+                if (minutes === 0) {
+                    return `${wholeHours} ч`;
+                } else if (wholeHours === 0) {
+                    return `${minutes} мин`;
+                } else {
+                    return `${wholeHours} ч ${minutes} мин`;
+                }
+            } else {
+                const minutes = Math.round(hours * 60);
+                return `${minutes} мин`;
+            }
+        }
+        
+        // Функция форматирования денег
+        function formatMoney(amount) {
+            return amount.toLocaleString('ru-RU') + ' руб.';
+        }
+        
         // Генерация списка дополнительных услуг клининга
         function generateServicesList() {
             servicesContainer.innerHTML = '';
@@ -1839,8 +1872,7 @@
                 if (input) {
                     input.addEventListener('input', function() {
                         updateServiceTotal();
-                        // Запускаем расчет с небольшой задержкой
-                        setTimeout(performCalculation, 300);
+                        scheduleCalculation();
                     });
                 }
             });
@@ -1854,8 +1886,7 @@
                     if (input) {
                         input.addEventListener('input', function() {
                             updateDryCleaningTotal();
-                            // Запускаем расчет с небольшой задержкой
-                            setTimeout(performCalculation, 300);
+                            scheduleCalculation();
                         });
                     }
                 });
@@ -2010,37 +2041,115 @@
             window.updateStaffRecommendation = updateStaffRecommendation;
         }
         
-        // Функция форматирования времени
-        function formatTime(hours) {
-            if (hours >= 1) {
-                const wholeHours = Math.floor(hours);
-                const minutes = Math.round((hours - wholeHours) * 60);
-                
-                if (minutes === 0) {
-                    return `${wholeHours} ч`;
-                } else if (wholeHours === 0) {
-                    return `${minutes} мин`;
-                } else {
-                    return `${wholeHours} ч ${minutes} мин`;
-                }
-            } else {
-                const minutes = Math.round(hours * 60);
-                return `${minutes} мин`;
+        // Получение цены из таблицы Excel для клининга
+        function getPriceFromTable(cleaningType, area) {
+            if (area <= 0) return 0;
+            
+            const roundedArea = Math.floor(area / 10) * 10;
+            let price = 0;
+            
+            switch(cleaningType) {
+                case 'maintenance':
+                    if (area <= 30) return 4290;
+                    if (area < 100) {
+                        const steps = Math.floor((area - 30) / 10);
+                        return 4290 + steps * 200;
+                    } else {
+                        const price90 = 4290 + 6 * 200;
+                        const steps = Math.floor((area - 90) / 10);
+                        return price90 + steps * 450;
+                    }
+                    
+                case 'general_light':
+                    if (area <= 30) return 5990;
+                    const stepsLight = Math.floor((area - 30) / 10);
+                    return 5990 + stepsLight * 1200;
+                    
+                case 'general_full':
+                    if (area <= 30) return 12490;
+                    if (area < 100) {
+                        const steps = Math.floor((area - 30) / 10);
+                        return 12490 + steps * 1500;
+                    } else {
+                        const price90 = 12490 + 6 * 1500;
+                        const steps = Math.floor((area - 90) / 10);
+                        return price90 + steps * 1000;
+                    }
+                    
+                case 'post_construction':
+                    if (area <= 30) return 13990;
+                    const stepsPost = Math.floor((area - 30) / 10);
+                    return 13990 + stepsPost * 1500;
+                    
+                default:
+                    return 0;
             }
         }
         
-        // Функция форматирования денег
-        function formatMoney(amount) {
-            return amount.toLocaleString('ru-RU') + ' руб.';
+        // Функция получения экономически оправданного количества сотрудников
+        function getEconomicalStaff(cleaningType, area, totalManHours, additionalTimeHours, additionalCost, economyMode) {
+            // Если площадь 0, то используем только totalManHours (который равен additionalTimeHours)
+            if (area <= 0) {
+                if (totalManHours <= 0) {
+                    return { min: 0, max: 0, rec: 0 };
+                }
+                let rec = Math.ceil(totalManHours / 8);
+                if (rec < 1) rec = 1;
+                return { min: rec, max: rec, rec: rec };
+            }
+            
+            const recommendations = economicalStaffRecommendations[cleaningType];
+            if (!recommendations) return { min: 1, max: 2, rec: 2 };
+            
+            // Упрощенная логика определения рекомендаций
+            let recommendedStaff = 2;
+            
+            if (area < 100) {
+                recommendedStaff = cleaningType === 'maintenance' ? 1 : 2;
+            } else if (area < 200) {
+                recommendedStaff = cleaningType === 'maintenance' ? 2 : 2;
+            } else if (area < 400) {
+                recommendedStaff = cleaningType === 'maintenance' ? 2 : 3;
+            } else {
+                recommendedStaff = cleaningType === 'maintenance' ? 3 : 4;
+            }
+            
+            // Для уборки после ремонта всегда больше сотрудников
+            if (cleaningType === 'post_construction') {
+                recommendedStaff = Math.max(recommendedStaff, 3);
+            }
+            
+            // Экономический режим может уменьшить количество сотрудников
+            if (economyMode && cleaningType === 'maintenance' && area < 150 && additionalTimeHours < 2) {
+                recommendedStaff = 1;
+            }
+            
+            return {
+                min: Math.max(1, recommendedStaff - 1),
+                max: recommendedStaff + 1,
+                rec: recommendedStaff
+            };
         }
         
-        // Функция расчета стоимости с учетом маржинальности
-        function calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient) {
+        // Функция определения сложности задачи
+        function getComplexity(totalHours, staff, cleaningType) {
+            if (staff === 0 || totalHours === 0) return complexityLabels.low;
+            
+            const hoursPerWorker = totalHours / staff;
+            
+            if (hoursPerWorker < 4) return complexityLabels.low;
+            if (hoursPerWorker < 8) return complexityLabels.medium;
+            if (hoursPerWorker < 12) return complexityLabels.high;
+            return complexityLabels.veryHigh;
+        }
+        
+        // Функция расчета стоимости с учетом маржинальности - ИСПРАВЛЕННАЯ
+        function calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient, pollutionCoefficient) {
             // Получаем базовую цену из таблицы (для клининга)
             const baseTablePrice = getPriceFromTable(cleaningType, area);
             
-            // Применяем коэффициент объекта к цене
-            let mainCleaningPrice = Math.round(baseTablePrice * objectCoefficient);
+            // Применяем коэффициент объекта И коэффициент загрязнения к цене
+            let mainCleaningPrice = Math.round(baseTablePrice * objectCoefficient * pollutionCoefficient);
             
             // Общая стоимость заказа до скидки
             const orderTotalBeforeDiscount = mainCleaningPrice + additionalCost + dryCleaningCost + logisticsCost.total;
@@ -2159,57 +2268,13 @@
             economyAnalysisElement.innerHTML = economyAnalysis;
         }
         
-        // Получение цены из таблицы Excel для клининга
-        function getPriceFromTable(cleaningType, area) {
-            if (area <= 0) return 0;
-            
-            const roundedArea = Math.floor(area / 10) * 10;
-            let price = 0;
-            
-            switch(cleaningType) {
-                case 'maintenance':
-                    if (area <= 30) return 4290;
-                    if (area < 100) {
-                        const steps = Math.floor((area - 30) / 10);
-                        return 4290 + steps * 200;
-                    } else {
-                        const price90 = 4290 + 6 * 200;
-                        const steps = Math.floor((area - 90) / 10);
-                        return price90 + steps * 450;
-                    }
-                    
-                case 'general_light':
-                    if (area <= 30) return 5990;
-                    const stepsLight = Math.floor((area - 30) / 10);
-                    return 5990 + stepsLight * 1200;
-                    
-                case 'general_full':
-                    if (area <= 30) return 12490;
-                    if (area < 100) {
-                        const steps = Math.floor((area - 30) / 10);
-                        return 12490 + steps * 1500;
-                    } else {
-                        const price90 = 12490 + 6 * 1500;
-                        const steps = Math.floor((area - 90) / 10);
-                        return price90 + steps * 1000;
-                    }
-                    
-                case 'post_construction':
-                    if (area <= 30) return 13990;
-                    const stepsPost = Math.floor((area - 30) / 10);
-                    return 13990 + stepsPost * 1500;
-                    
-                default:
-                    return 0;
-            }
-        }
-        
-        // Основная функция расчета
+        // Основная функция расчета - ИСПРАВЛЕННАЯ ВЕРСИЯ
         function performCalculation() {
             // Получение значений из формы
             const area = parseFloat(areaInput.value);
             const objectType = objectTypeSelect.value;
-            const pollutionLevel = parseFloat(pollutionLevelSelect.value);
+            const pollutionLevelValue = pollutionLevelSelect.value;
+            const pollutionLevel = parseFloat(pollutionLevelValue);
             const economyMode = economyModeToggle.checked;
             const discountPercent = parseFloat(discountInput.value);
             
@@ -2218,6 +2283,9 @@
             
             // Получаем коэффициент объекта
             const objectCoefficient = objectCoefficients[objectType] || 1.0;
+            
+            // Получаем коэффициент загрязнения
+            const pollutionCoefficient = pollutionCoefficients[pollutionLevel] ? pollutionCoefficients[pollutionLevel].multiplier : 1.0;
             
             // Расчет времени и стоимости дополнительных услуг клининга
             const additionalResult = updateServiceTotal();
@@ -2245,8 +2313,8 @@
                 baseManHours = norm.avg * area;
             }
             
-            // Применение коэффициентов
-            const adjustedManHours = baseManHours * objectCoefficient * pollutionLevel;
+            // Применение коэффициентов - ВАЖНО: загрязнение применяется и к времени, и к стоимости
+            const adjustedManHours = baseManHours * objectCoefficient * pollutionCoefficient;
             
             // Общее количество человеко-часов
             const totalManHours = adjustedManHours + additionalTimeHours;
@@ -2298,6 +2366,10 @@
                 recommendationText = `<i class="fas fa-users"></i> Для уборки ${area} м² ${staffModeManual.checked ? 'вы выбрали' : 'рекомендуется'} бригада из ${staffRequired} сотрудников. Каждый отработает ${formatTime(timePerWorker)}.`;
             }
             
+            // Добавляем информацию о коэффициентах
+            const pollutionName = pollutionCoefficients[pollutionLevel] ? pollutionCoefficients[pollutionLevel].name : "Средняя";
+            recommendationText += ` <span style="color: #6c757d;"><i class="fas fa-tint"></i> Степень загрязнения: ${pollutionName} (коэфф. ×${pollutionCoefficient})</span>`;
+            
             // Добавляем информацию о химчистке, если она выбрана
             if (dryCleaningCost > 0) {
                 recommendationText += ` <span style="color: #9c27b0;"><i class="fas fa-tshirt"></i> В заказ включены услуги химчистки на сумму ${formatMoney(dryCleaningCost)}.</span>`;
@@ -2318,8 +2390,8 @@
             
             recommendationMainElement.innerHTML = recommendationText;
             
-            // Расчет стоимости с учетом маржинальности
-            calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient);
+            // Расчет стоимости с учетом маржинальности - ПЕРЕДАЕМ pollutionCoefficient
+            calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient, pollutionCoefficient);
             
             // Формирование плана работы
             generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, dryCleaningCost, economyMode, discountPercent, logisticsCost);
@@ -2331,66 +2403,15 @@
             recommendationCardElement.style.display = 'block';
         }
         
-        // Функция получения экономически оправданного количества сотрудников
-        function getEconomicalStaff(cleaningType, area, totalManHours, additionalTimeHours, additionalCost, economyMode) {
-            // Если площадь 0, то используем только totalManHours (который равен additionalTimeHours)
-            if (area <= 0) {
-                if (totalManHours <= 0) {
-                    return { min: 0, max: 0, rec: 0 };
-                }
-                let rec = Math.ceil(totalManHours / 8);
-                if (rec < 1) rec = 1;
-                return { min: rec, max: rec, rec: rec };
-            }
-            
-            const recommendations = economicalStaffRecommendations[cleaningType];
-            if (!recommendations) return { min: 1, max: 2, rec: 2 };
-            
-            // Упрощенная логика определения рекомендаций
-            let recommendedStaff = 2;
-            
-            if (area < 100) {
-                recommendedStaff = cleaningType === 'maintenance' ? 1 : 2;
-            } else if (area < 200) {
-                recommendedStaff = cleaningType === 'maintenance' ? 2 : 2;
-            } else if (area < 400) {
-                recommendedStaff = cleaningType === 'maintenance' ? 2 : 3;
-            } else {
-                recommendedStaff = cleaningType === 'maintenance' ? 3 : 4;
-            }
-            
-            // Для уборки после ремонта всегда больше сотрудников
-            if (cleaningType === 'post_construction') {
-                recommendedStaff = Math.max(recommendedStaff, 3);
-            }
-            
-            // Экономический режим может уменьшить количество сотрудников
-            if (economyMode && cleaningType === 'maintenance' && area < 150 && additionalTimeHours < 2) {
-                recommendedStaff = 1;
-            }
-            
-            return {
-                min: Math.max(1, recommendedStaff - 1),
-                max: recommendedStaff + 1,
-                rec: recommendedStaff
-            };
-        }
-        
-        // Функция определения сложности задачи
-        function getComplexity(totalHours, staff, cleaningType) {
-            if (staff === 0 || totalHours === 0) return complexityLabels.low;
-            
-            const hoursPerWorker = totalHours / staff;
-            
-            if (hoursPerWorker < 4) return complexityLabels.low;
-            if (hoursPerWorker < 8) return complexityLabels.medium;
-            if (hoursPerWorker < 12) return complexityLabels.high;
-            return complexityLabels.veryHigh;
-        }
-        
-        // Функция генерации плана работы
+        // Функция генерации плана работы - обновленная для отображения коэффициентов
         function generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, dryCleaningCost, economyMode, discountPercent, logisticsCost) {
             let planHTML = '<div class="work-plan">';
+            
+            // Получаем значения коэффициентов
+            const objectCoefficient = objectCoefficients[objectType] || 1.0;
+            const pollutionLevelValue = pollutionLevelSelect.value;
+            const pollutionCoefficient = pollutionCoefficients[pollutionLevelValue] ? pollutionCoefficients[pollutionLevelValue].multiplier : 1.0;
+            const pollutionName = pollutionCoefficients[pollutionLevelValue] ? pollutionCoefficients[pollutionLevelValue].name : "Средняя";
             
             // Определение типа уборки для отображения
             let cleaningTypeText = "";
@@ -2406,6 +2427,12 @@
             } else {
                 planHTML += `<p><strong>План для дополнительных услуг:</strong></p>`;
             }
+            
+            // Информация о коэффициентах
+            planHTML += `<div class="info-text">`;
+            planHTML += `<i class="fas fa-building"></i> Тип объекта: ${objectTypeSelect.options[objectTypeSelect.selectedIndex].text} (коэфф. ×${objectCoefficient.toFixed(1)})<br>`;
+            planHTML += `<i class="fas fa-tint"></i> Степень загрязнения: ${pollutionName} (коэфф. ×${pollutionCoefficient.toFixed(1)})`;
+            planHTML += `</div>`;
             
             // Информация о режиме выбора персонала
             if (staffModeManual.checked) {
@@ -2621,6 +2648,29 @@
             }, 300);
         }
         
+        // Добавляем функцию для обновления отображения коэффициентов загрязнения
+        function updatePollutionIndicators() {
+            const pollutionOptions = pollutionLevelSelect.options;
+            
+            for (let i = 0; i < pollutionOptions.length; i++) {
+                const option = pollutionOptions[i];
+                const value = parseFloat(option.value);
+                const coefficient = pollutionCoefficients[value];
+                
+                if (coefficient) {
+                    // Обновляем текст опции
+                    const baseText = option.text.split(' ×')[0];
+                    option.text = `${baseText} ×${coefficient.multiplier}`;
+                    
+                    // Обновляем индикатор
+                    const indicatorSpan = option.querySelector('.pollution-indicator');
+                    if (indicatorSpan) {
+                        indicatorSpan.className = `pollution-indicator ${coefficient.color}`;
+                    }
+                }
+            }
+        }
+        
         // Инициализация при загрузке страницы
         window.addEventListener('DOMContentLoaded', function() {
             // Генерация списков услуг
@@ -2629,6 +2679,9 @@
             
             // Инициализация выбора количества сотрудников
             initStaffSelection();
+            
+            // Обновление индикаторов загрязнения
+            updatePollutionIndicators();
             
             // Установим начальные значения
             areaSlider.value = areaInput.value;
