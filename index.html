@@ -689,6 +689,61 @@
             font-size: 1rem;
         }
         
+        /* Специальный стиль для услуги мойки окон */
+        .window-service-item {
+            border-left: 5px solid #00acc1;
+            background: linear-gradient(to right, #f8faff, #e0f7fa);
+        }
+        
+        .window-service-name {
+            color: #006064;
+        }
+        
+        .window-service-price {
+            color: #00acc1;
+        }
+        
+        .season-selector {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .season-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #e0e6ff;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .season-btn.active {
+            background: #00acc1;
+            border-color: #006064;
+            color: white;
+        }
+        
+        .season-btn i {
+            font-size: 1rem;
+        }
+        
+        .season-btn.summer.active {
+            background: #ff9800;
+            border-color: #f57c00;
+        }
+        
+        .season-btn.winter.active {
+            background: #00acc1;
+            border-color: #006064;
+        }
+        
         .additional-total {
             background: linear-gradient(135deg, #eef2ff 0%, #e0e6ff 100%);
             padding: 15px;
@@ -1174,7 +1229,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- ПЛАВАЮЩАЯ СТОИМОСТЬ В ПРАВОМ ВЕРХНЕМ УГЛУ - ДВИГАЕТСЯ ВНИЗ ПРИ ПРОКРУТКЕ -->
+        <!-- ПЛАВАЮЩАЯ СТОИМОСТЬ В ПРАВОМ ВЕРХНЕМ УГЛУ -->
         <div class="floating-order-total" id="floatingOrderTotal">
             <i class="fas fa-file-invoice"></i>
             <div class="floating-total-info">
@@ -1394,6 +1449,40 @@
                 
                 <div class="info-text">Укажите количество нужных услуг (время добавится к основному)</div>
                 
+                <!-- СПЕЦИАЛЬНЫЙ БЛОК ДЛЯ МОЙКИ ОКОН -->
+                <div class="service-item window-service-item" id="window-cleaning-service">
+                    <div class="service-info">
+                        <div class="service-name window-service-name">
+                            <i class="fas fa-window-maximize"></i> Мойка окон
+                        </div>
+                        <div class="service-details">
+                            <span class="service-price window-service-price" id="windowPriceDisplay">Лето: 250 руб/м², Зима: 350 руб/м²</span>
+                            <div class="season-selector">
+                                <div class="season-btn summer active" id="summerSeasonBtn" data-season="summer">
+                                    <i class="fas fa-sun"></i> Лето (250₽)
+                                </div>
+                                <div class="season-btn winter" id="winterSeasonBtn" data-season="winter">
+                                    <i class="fas fa-snowflake"></i> Зима (350₽)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-controls">
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <input type="number" id="windowArea" min="0" max="500" value="0" step="0.1" class="service-quantity" placeholder="м²" style="width: 80px;">
+                                <span style="font-size: 0.9rem; color: #666;">м²</span>
+                            </div>
+                            <select id="windowDifficulty" style="width: 120px; padding: 5px; font-size: 0.8rem;">
+                                <option value="1.0">Обычный доступ</option>
+                                <option value="1.3">Сложный доступ</option>
+                                <option value="1.5">Альпинист</option>
+                            </select>
+                        </div>
+                        <div class="service-total" id="windowTotal">0 руб</div>
+                    </div>
+                </div>
+                
                 <div id="servicesContainer">
                     <!-- Список дополнительных услуг будет сгенерирован JavaScript -->
                 </div>
@@ -1446,6 +1535,11 @@
                 <div class="result-item">
                     <div class="result-label"><i class="fas fa-plus-circle"></i> Дополнительные услуги клининга:</div>
                     <div class="result-value" id="additionalTime">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label"><i class="fas fa-window-maximize"></i> Мойка окон:</div>
+                    <div class="result-value" id="windowCleaningResult">-</div>
                 </div>
                 
                 <div class="result-item">
@@ -1507,6 +1601,11 @@
                 <div class="cost-item">
                     <div class="cost-label">Стоимость дополнительных услуг клининга:</div>
                     <div class="cost-value" id="additionalCost">-</div>
+                </div>
+                
+                <div class="cost-item">
+                    <div class="cost-label">Стоимость мойки окон:</div>
+                    <div class="cost-value" id="windowCost">-</div>
                 </div>
                 
                 <div class="cost-item">
@@ -1590,6 +1689,12 @@
         const EQUIPMENT_DELIVERY_COST = 1500; // Доставка оборудования
         const MIN_DRY_CLEANING_ORDER = 5000; // Минимальная сумма заказа только химчистки
         
+        // Цены на мойку окон
+        const WINDOW_PRICES = {
+            summer: 250, // руб/м² летом
+            winter: 350  // руб/м² зимой
+        };
+        
         // Нормативы времени в человеко-часах на м² (основные диапазоны)
         const cleaningNorms = {
             maintenance: { min: 0.15, max: 0.25, avg: 0.2 },
@@ -1616,7 +1721,7 @@
             2.6: { name: "После стройки/ремонта", multiplier: 2.6, color: "pollution-extreme" }
         };
         
-        // Дополнительные услуги клининга
+        // Дополнительные услуги клининга (без мойки окон, она будет отдельно)
         const additionalServices = [
             { id: 'ironing', name: 'Глажка', time: 0.5, price: 400, unit: '30 мин', type: 'number', icon: 'fas fa-tshirt' },
             { id: 'extra_30min', name: 'Дополнительные 30 мин работы', time: 0.5, price: 500, unit: '30 мин', type: 'number', icon: 'fas fa-clock' },
@@ -1823,6 +1928,15 @@
         const dryCleaningContainer = document.getElementById('dryCleaningContainer');
         const dryCleaningTotal = document.getElementById('dryCleaningTotal');
         
+        // Элементы для мойки окон
+        const windowArea = document.getElementById('windowArea');
+        const windowDifficulty = document.getElementById('windowDifficulty');
+        const windowTotal = document.getElementById('windowTotal');
+        const summerSeasonBtn = document.getElementById('summerSeasonBtn');
+        const winterSeasonBtn = document.getElementById('winterSeasonBtn');
+        const windowCleaningResult = document.getElementById('windowCleaningResult');
+        const windowCost = document.getElementById('windowCost');
+        
         // Элементы для плавающей стоимости
         const floatingOrderTotal = document.getElementById('floatingOrderTotal');
         const floatingTotalValue = document.getElementById('floatingTotalValue');
@@ -1879,6 +1993,7 @@
         let currentRecommendedStaff = 2;
         let manualStaffCount = 2;
         let isDryCleaningCollapsed = true; // По умолчанию свернуто
+        let currentWindowSeason = 'summer'; // Текущий сезон для мойки окон
         
         // Функция форматирования времени
         function formatTime(hours) {
@@ -1949,6 +2064,43 @@
                 dryCleaningContent.classList.remove('collapsed');
                 dryCleaningToggleIcon.className = 'fas fa-chevron-circle-up toggle-icon';
             }
+        }
+        
+        // Инициализация селектора сезона для окон
+        function initWindowSeasonSelector() {
+            summerSeasonBtn.addEventListener('click', function() {
+                summerSeasonBtn.classList.add('active');
+                winterSeasonBtn.classList.remove('active');
+                currentWindowSeason = 'summer';
+                calculateWindowCleaning();
+                scheduleCalculation();
+            });
+            
+            winterSeasonBtn.addEventListener('click', function() {
+                winterSeasonBtn.classList.add('active');
+                summerSeasonBtn.classList.remove('active');
+                currentWindowSeason = 'winter';
+                calculateWindowCleaning();
+                scheduleCalculation();
+            });
+        }
+        
+        // Функция расчета стоимости мойки окон
+        function calculateWindowCleaning() {
+            const area = parseFloat(windowArea.value) || 0;
+            const difficulty = parseFloat(windowDifficulty.value) || 1.0;
+            
+            const pricePerM2 = WINDOW_PRICES[currentWindowSeason];
+            const totalCost = area * pricePerM2 * difficulty;
+            
+            windowTotal.textContent = totalCost > 0 ? formatMoney(totalCost) : '0 руб';
+            if (totalCost > 0) {
+                windowTotal.style.color = '#00acc1';
+            } else {
+                windowTotal.style.color = '#182848';
+            }
+            
+            return totalCost;
         }
         
         // Генерация списка дополнительных услуг клининга
@@ -2097,7 +2249,10 @@
                 totalAdditionalCost += serviceCost;
             });
             
-            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги клининга: ${totalAdditionalTime.toFixed(1)} часов, ${formatMoney(totalAdditionalCost)}`;
+            // Добавляем стоимость мойки окон (без времени)
+            const windowCost = calculateWindowCleaning();
+            
+            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги: ${totalAdditionalTime.toFixed(1)} часов, ${formatMoney(totalAdditionalCost + windowCost)}`;
             return { totalTime: totalAdditionalTime, totalCost: totalAdditionalCost };
         }
         
@@ -2314,12 +2469,12 @@
         }
         
         // Функция расчета стоимости
-        function calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient, pollutionCoefficient) {
+        function calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, windowCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient, pollutionCoefficient) {
             const baseTablePrice = getPriceFromTable(cleaningType, area);
             
             let mainCleaningPrice = Math.round(baseTablePrice * objectCoefficient * pollutionCoefficient);
             
-            const orderTotalBeforeDiscount = mainCleaningPrice + additionalCost + dryCleaningCost + logisticsCost.total;
+            const orderTotalBeforeDiscount = mainCleaningPrice + additionalCost + dryCleaningCost + windowCleaningCost + logisticsCost.total;
             
             const discountAmount = Math.round(orderTotalBeforeDiscount * (discountPercent / 100));
             const orderTotal = orderTotalBeforeDiscount - discountAmount;
@@ -2334,6 +2489,7 @@
             mainCleaningCostElement.textContent = `${formatMoney(mainCleaningPrice)}`;
             additionalCostElement.textContent = formatMoney(additionalCost);
             dryCleaningCostElement.textContent = formatMoney(dryCleaningCost);
+            windowCost.textContent = formatMoney(windowCleaningCost);
             carCostElement.textContent = logisticsCost.car > 0 ? formatMoney(logisticsCost.car) : '0 руб.';
             equipmentCostElement.textContent = logisticsCost.equipment > 0 ? formatMoney(logisticsCost.equipment) : '0 руб.';
             totalOrderCostElement.textContent = formatMoney(orderTotalBeforeDiscount);
@@ -2345,6 +2501,7 @@
             
             mainCleaningCostResultElement.textContent = `${formatMoney(mainCleaningPrice)}`;
             dryCleaningCostResultElement.textContent = `${formatMoney(dryCleaningCost)}`;
+            windowCleaningResult.textContent = `${formatMoney(windowCleaningCost)}`;
             
             if (margin < 0) {
                 marginPercentElement.style.color = '#dc3545';
@@ -2449,6 +2606,9 @@
             const dryCleaningResult = updateDryCleaningTotal();
             let dryCleaningCost = dryCleaningResult.totalCost;
             
+            // Расчет стоимости мойки окон
+            const windowCleaningCost = calculateWindowCleaning();
+            
             if (dryCleaningCost > 0 && area <= 0 && additionalCost <= 0 && dryCleaningCost < MIN_DRY_CLEANING_ORDER) {
                 dryCleaningCost = MIN_DRY_CLEANING_ORDER;
                 dryCleaningTotal.innerHTML = `<i class="fas fa-receipt"></i> Услуги химчистки: ${formatMoney(dryCleaningCost)} (минимальный заказ)`;
@@ -2498,16 +2658,23 @@
             
             let recommendationText = "";
             
-            if (area <= 0) {
+            if (area <= 0 && windowCleaningCost <= 0 && additionalCost <= 0) {
                 recommendationText = `<i class="fas fa-home"></i> Площадь помещения: 0 м². Расчет выполнен только для дополнительных услуг.`;
             } else if (staffRequired === 1) {
                 recommendationText = `<i class="fas fa-user-check"></i> Для уборки ${area} м² ${staffModeManual.checked ? 'вы выбрали' : 'экономически выгодно использовать'} 1 сотрудника. Работа займет ${formatTime(timePerWorker)}.`;
-            } else {
+            } else if (staffRequired > 0) {
                 recommendationText = `<i class="fas fa-users"></i> Для уборки ${area} м² ${staffModeManual.checked ? 'вы выбрали' : 'рекомендуется'} бригада из ${staffRequired} сотрудников. Каждый отработает ${formatTime(timePerWorker)}.`;
             }
             
             const pollutionName = pollutionCoefficients[pollutionLevel] ? pollutionCoefficients[pollutionLevel].name : "Средняя";
             recommendationText += ` <span style="color: #6c757d;"><i class="fas fa-tint"></i> Степень загрязнения: ${pollutionName} (коэфф. ×${pollutionCoefficient})</span>`;
+            
+            if (windowCleaningCost > 0) {
+                const season = currentWindowSeason === 'summer' ? 'лето' : 'зима';
+                const difficulty = parseFloat(windowDifficulty.value);
+                const difficultyText = difficulty > 1.0 ? ' (сложный доступ)' : '';
+                recommendationText += ` <span style="color: #00acc1;"><i class="fas fa-window-maximize"></i> Мойка окон: ${windowArea.value} м² (${season}, коэфф. ×${difficulty}) — ${formatMoney(windowCleaningCost)}</span>`;
+            }
             
             if (dryCleaningCost > 0) {
                 recommendationText += ` <span style="color: #9c27b0;"><i class="fas fa-tshirt"></i> В заказ включены услуги химчистки на сумму ${formatMoney(dryCleaningCost)}.</span>`;
@@ -2527,9 +2694,9 @@
             
             recommendationMainElement.innerHTML = recommendationText;
             
-            const orderTotal = calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient, pollutionCoefficient);
+            const orderTotal = calculateCost(staffRequired, timePerWorker, totalManHours, additionalCost, dryCleaningCost, windowCleaningCost, cleaningType, area, economyMode, discountPercent, logisticsCost, objectCoefficient, pollutionCoefficient);
             
-            generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, dryCleaningCost, economyMode, discountPercent, logisticsCost);
+            generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, dryCleaningCost, windowCleaningCost, economyMode, discountPercent, logisticsCost);
             
             additionalInfoElement.innerHTML = `<i class="fas fa-info-circle"></i> <strong>${complexity.desc}</strong> ${timePerWorker > 8 ? "Рекомендуется разбить работу на несколько дней или увеличить бригаду." : ""}`;
             
@@ -2537,7 +2704,7 @@
         }
         
         // Функция генерации плана работы
-        function generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, dryCleaningCost, economyMode, discountPercent, logisticsCost) {
+        function generateWorkPlan(area, cleaningType, objectType, staffRequired, totalManHours, timePerWorker, additionalTimeHours, additionalCost, dryCleaningCost, windowCleaningCost, economyMode, discountPercent, logisticsCost) {
             let planHTML = '<div class="work-plan">';
             
             const objectCoefficient = objectCoefficients[objectType] || 1.0;
@@ -2574,8 +2741,15 @@
                 planHTML += `</div>`;
             }
             
+            if (windowCleaningCost > 0) {
+                const season = currentWindowSeason === 'summer' ? 'летний' : 'зимний';
+                planHTML += `<div class="info-text" style="color: #00acc1;">`;
+                planHTML += `<i class="fas fa-window-maximize"></i> <strong>Мойка окон включена в заказ:</strong> ${windowArea.value} м², ${season} сезон, коэфф. доступа ×${windowDifficulty.value} — ${formatMoney(windowCleaningCost)}`;
+                planHTML += `</div>`;
+            }
+            
             if (dryCleaningCost > 0) {
-                planHTML += `<div class="info-text">`;
+                planHTML += `<div class="info-text" style="color: #9c27b0;">`;
                 planHTML += `<i class="fas fa-tshirt"></i> <strong>Услуги химчистки включены в заказ:</strong> ${formatMoney(dryCleaningCost)}`;
                 planHTML += `</div>`;
             }
@@ -2631,6 +2805,10 @@
                 planHTML += `<strong><i class="fas fa-money-bill-wave"></i> Стоимость уборки:</strong> ${mainCleaningCostResultElement.textContent}<br>`;
             }
             
+            if (windowCleaningCost > 0) {
+                planHTML += `<strong><i class="fas fa-window-maximize"></i> Мойка окон:</strong> ${formatMoney(windowCleaningCost)}<br>`;
+            }
+            
             if (additionalCost > 0) {
                 planHTML += `<strong><i class="fas fa-plus-circle"></i> Доп. услуги клининга:</strong> ${formatMoney(additionalCost)}<br>`;
             }
@@ -2683,6 +2861,15 @@
             carServiceCheckbox.checked = false;
             equipmentDeliveryCheckbox.checked = false;
             
+            // Сброс параметров мойки окон
+            windowArea.value = 0;
+            windowDifficulty.value = "1.0";
+            currentWindowSeason = 'summer';
+            summerSeasonBtn.classList.add('active');
+            winterSeasonBtn.classList.remove('active');
+            windowTotal.textContent = '0 руб';
+            windowTotal.style.color = '#182848';
+            
             additionalServices.forEach(service => {
                 const input = document.getElementById(`qty-${service.id}`);
                 if (input) input.value = 0;
@@ -2705,12 +2892,13 @@
                 });
             });
             
-            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги клининга: 0 часов, 0 руб.`;
+            additionalServicesTotal.innerHTML = `<i class="fas fa-receipt"></i> Дополнительные услуги: 0 часов, 0 руб.`;
             dryCleaningTotal.innerHTML = `<i class="fas fa-receipt"></i> Услуги химчистки: 0 руб.`;
             
             baseTimeElement.textContent = '-';
             additionalTimeElement.textContent = '-';
             dryCleaningCostResultElement.textContent = '-';
+            windowCleaningResult.textContent = '-';
             totalTimeElement.textContent = '-';
             staffRequiredElement.textContent = '-';
             complexityLevelElement.textContent = '-';
@@ -2790,6 +2978,7 @@
             generateDryCleaningList();
             
             initStaffSelection();
+            initWindowSeasonSelector();
             
             updatePollutionIndicators();
             
@@ -2801,8 +2990,19 @@
             // Добавляем обработчик для сворачивания/разворачивания химчистки
             dryCleaningHeader.addEventListener('click', toggleDryCleaning);
             
-            // ДОБАВЛЯЕМ ОБРАБОТЧИК ПРОКРУТКИ ДЛЯ ПЛАВАЮЩЕЙ СТОИМОСТИ
+            // Добавляем обработчик прокрутки для плавающей стоимости
             window.addEventListener('scroll', handleScroll);
+            
+            // Обработчики для мойки окон
+            windowArea.addEventListener('input', function() {
+                calculateWindowCleaning();
+                scheduleCalculation();
+            });
+            
+            windowDifficulty.addEventListener('change', function() {
+                calculateWindowCleaning();
+                scheduleCalculation();
+            });
             
             areaSlider.value = areaInput.value;
             discountSlider.value = discountInput.value;
