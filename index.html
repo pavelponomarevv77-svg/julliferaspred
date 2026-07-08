@@ -1265,8 +1265,8 @@
                     <select id="objectType">
                         <option value="apartment" selected>Квартира (коэфф. 1.0)</option>
                         <option value="house">Частный дом / Коттедж (коэфф. 1.2)</option>
-                        <option value="office">Офис open-space (коэфф. 0.7)</option>
-                        <option value="commercial">Коммерческое помещение (коэфф. 1.1)</option>
+                        <option value="office">Офис open-space (коэфф. 1.0)</option>
+                        <option value="commercial">Коммерческое помещение (коэфф. 1.5)</option>
                         <option value="restaurant">Ресторан / Кафе (коэфф. 1.3)</option>
                     </select>
                     <div class="info-text">Коэффициенты учитывают сложность уборки для разных типов объектов</div>
@@ -1703,12 +1703,12 @@
             post_construction: { min: 1.5, max: 3.5, avg: 2.25 }
         };
         
-        // Коэффициенты для типа объекта
+        // Коэффициенты для типа объекта (изменены office и commercial)
         const objectCoefficients = {
             apartment: 1.0,     // Квартира
             house: 1.2,         // Дом (больше комнат, санузлов)
-            office: 0.7,        // Офис open-space (проще убирать)
-            commercial: 1.1,    // Коммерческое помещение
+            office: 1.0,        // Офис open-space (повышено с 0.7 до 1.0)
+            commercial: 1.5,    // Коммерческое помещение (повышено с 1.1 до 1.5)
             restaurant: 1.3     // Ресторан (жир, кухня)
         };
         
